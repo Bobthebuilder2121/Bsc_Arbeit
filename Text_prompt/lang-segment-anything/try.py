@@ -4,7 +4,30 @@ import matplotlib.pyplot as plt
 import cv2 as cv
 import numpy as np
 import os
+import subprocess as sp
+from threading import Thread , Timer
+import sched, time
+import torch
 
+def get_gpu_memory():
+    output_to_list = lambda x: x.decode('ascii').split('\n')[:-1]
+    ACCEPTABLE_AVAILABLE_MEMORY = 1024
+    COMMAND = "nvidia-smi --query-gpu=memory.used --format=csv"
+    try:
+        memory_use_info = output_to_list(sp.check_output(COMMAND.split(),stderr=sp.STDOUT))[1:]
+    except sp.CalledProcessError as e:
+        raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
+    memory_use_values = [int(x.split()[0]) for i, x in enumerate(memory_use_info)]
+    # print(memory_use_values)
+    return memory_use_values
+
+
+def print_gpu_memory_every_sec():
+    """
+        This function calls itself every 5 secs and print the gpu_memory.
+    """
+    Timer(.1, print_gpu_memory_every_sec).start()
+    print(get_gpu_memory())
 
 def save_mask(mask_np, filename):
     mask_image = Image.fromarray((mask_np * 255).astype(np.uint8))
@@ -100,16 +123,25 @@ assets_amount = 0
 for root_dir, cur_dir, files in os.walk(assets_path):
     assets_amount += len(files)
 print('file count:', assets_amount)
-
+print_gpu_memory_every_sec()
 # Load the LangSAM model and set the text prompt
 model = LangSAM()
 text_prompt = "phone"
 
-for i in range(assets_amount):
+for i in range(1):
     image_path = f"./assets2/{str(i).zfill(3)}.jpeg"
+    #image_path = f"./assets/car.jpeg"
     image_pil = Image.open(image_path).convert("RGB")
-    text_prompt = "phone"
+    
+    height, width = np.shape(image_pil)[0:2]
+    print('height:', height, 'width:', width)
+    min, max = np.min(image_pil), np.max(image_pil)
+    print('min:', min, 'max:', max)
+    #image_pil = image_pil.thumbnail((800,800))
+    text_prompt = "blue phone"
+    print(f"Processing image {i} with the '{text_prompt}' prompt...")
     masks, boxes, phrases, logits = model.predict(image_pil, text_prompt)
+    torch.cuda.empty_cache() # Clear GPU memory
     if len(masks) == 0:
         print(f"No objects of the '{text_prompt}' prompt detected in the image.")
     else:
