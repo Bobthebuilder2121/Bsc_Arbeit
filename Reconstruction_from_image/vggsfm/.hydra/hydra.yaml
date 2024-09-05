@@ -111,13 +111,11 @@ hydra:
   overrides:
     hydra:
     - hydra.mode=RUN
-    task:
-    - SCENE_DIR=examples/kitchen
-    - gr_visualize=True
+    task: []
   job:
     name: demo
     chdir: null
-    override_dirname: SCENE_DIR=examples/kitchen,gr_visualize=True
+    override_dirname: ''
     id: ???
     num: ???
     config_name: demo

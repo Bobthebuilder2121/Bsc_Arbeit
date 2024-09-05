@@ -123,12 +123,12 @@ assets_amount = 0
 for root_dir, cur_dir, files in os.walk(assets_path):
     assets_amount += len(files)
 print('file count:', assets_amount)
-print_gpu_memory_every_sec()
+#print_gpu_memory_every_sec()
 # Load the LangSAM model and set the text prompt
 model = LangSAM()
-text_prompt = "phone"
+text_prompt = "blue marker"
 
-for i in range(1):
+for i in range(assets_amount):
     image_path = f"./assets2/{str(i).zfill(3)}.jpeg"
     #image_path = f"./assets/car.jpeg"
     image_pil = Image.open(image_path).convert("RGB")

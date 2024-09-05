@@ -39,10 +39,10 @@ def demo_fn(cfg: DictConfig):
 
     # Initialize VGGSfM Runner
     vggsfm_runner = VGGSfMRunner(cfg)
-    vggsfm_runner.vggsfm_model.to(device)#this was added
-    vggsfm_runner.camera_predictor.to(device)#this was added
-    vggsfm_runner.triangulator.to(device)#this was added
-    vggsfm_runner.track_predictor.to(device)#this was added
+    #vggsfm_runner.vggsfm_model.to(device)#this was added
+    #vggsfm_runner.camera_predictor.to(device)#this was added
+    #vggsfm_runner.triangulator.to(device)#this was added
+    #vggsfm_runner.track_predictor.to(device)#this was added
     # Load Data
     test_dataset = DemoLoader(
         SCENE_DIR=cfg.SCENE_DIR,

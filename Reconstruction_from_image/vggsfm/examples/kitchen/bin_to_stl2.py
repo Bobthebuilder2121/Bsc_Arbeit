@@ -2,7 +2,10 @@
 import os
 import numpy as np
 import open3d as o3d
+import struct
 
+
+  
 def read_point3d_txt(point3d_path):
     if not os.path.exists(point3d_path):
         raise Exception(f"No such file : {point3d_path}")
@@ -48,6 +51,7 @@ def inverse_relation(candidate_img_ids):
                 candidate_point_ids[img_id] = [pt_id]
     return candidate_point_ids
 
+
 xyz, colors_rgb, candidateids =read_point3d_txt("points3D.txt")
 print(xyz.shape, colors_rgb.shape)
 # Create an Open3D PointCloud object
@@ -59,24 +63,4 @@ pcd.colors = o3d.utility.Vector3dVector(colors_rgb)
 o3d.io.write_point_cloud("points3D.pcd", pcd)
 
 # Visualize the point cloud
-o3d.visualization.draw_geometries([pcd])
-import open3d as o3d
-import trimesh
-import numpy as np
-
-pcd.estimate_normals()
-
-# estimate radius for rolling ball
-distances = pcd.compute_nearest_neighbor_distance()
-avg_dist = np.mean(distances)
-radius = 1.5 * avg_dist   
-
-mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(
-           pcd,
-           o3d.utility.DoubleVector([radius, radius * 2]))
-
-# create the triangular mesh with the vertices and faces from open3d
-tri_mesh = trimesh.Trimesh(np.asarray(mesh.vertices), np.asarray(mesh.triangles),
-                          vertex_normals=np.asarray(mesh.vertex_normals))
-o3d.io.write_triangle_mesh("mesh.stl", mesh)
-o3d.visualization.draw_geometries([mesh])
+#o3d.visualization.draw_geometries([pcd])
