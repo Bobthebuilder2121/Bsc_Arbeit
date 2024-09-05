@@ -1,0 +1,86 @@
+[2024-09-01 01:26:08,576][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 01:30:11,138][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 01:30:36,723][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 01:31:00,660][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 01:34:57,205][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 01:54:15,481][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 02:02:08,655][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 14:59:19,640][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 15:03:00,324][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 15:09:06,593][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 15:10:21,797][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 15:16:38,418][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 15:22:17,353][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 15:29:30,171][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 15:43:37,118][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 15:49:27,107][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 15:52:32,569][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:01:57,202][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:04:36,967][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:24:44,432][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:32:51,010][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:37:33,284][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:40:36,482][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:42:55,821][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:44:30,836][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:51:24,526][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 16:57:25,591][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 17:11:24,627][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 17:29:04,981][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 17:36:24,618][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 17:39:52,091][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 17:43:35,441][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 17:47:15,817][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 17:59:45,647][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:02:36,276][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:03:55,839][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:05:13,413][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:06:38,136][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:10:01,522][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:12:17,174][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:15:42,030][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:22:29,017][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:25:06,426][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:28:24,858][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:29:09,610][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:33:19,347][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:37:25,436][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:44:54,462][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 18:51:00,732][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:09:24,166][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:10:12,946][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:13:36,726][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:20:48,139][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:22:39,873][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:24:16,839][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:24:37,610][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:37:19,071][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:37:25,193][visdom][WARNING] - Setting up a new session...
+[2024-09-01 19:37:25,200][visdom][INFO] - Socket refused connection, running socketless
+[2024-09-01 19:37:25,200][visdom][ERROR] - [Errno 111] Connection refused
+[2024-09-01 19:37:25,200][websocket][ERROR] - [Errno 111] Connection refused - goodbye
+[2024-09-01 19:37:25,200][websocket][ERROR] - error from callback <function Visdom.setup_socket.<locals>.on_close at 0x7ff5ac58b130>: Visdom.setup_socket.<locals>.on_close() takes 1 positional argument but 3 were given
+[2024-09-01 19:37:25,200][visdom][ERROR] - Visdom.setup_socket.<locals>.on_close() takes 1 positional argument but 3 were given
+[2024-09-01 19:43:55,296][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 19:53:01,328][httpx][INFO] - HTTP Request: GET http://127.0.0.1:7860/startup-events "HTTP/1.1 200 OK"
+[2024-09-01 19:53:01,350][httpx][INFO] - HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+[2024-09-01 19:53:01,638][httpx][INFO] - HTTP Request: GET https://api.gradio.app/gradio-messaging/en "HTTP/1.1 200 OK"
+[2024-09-01 19:53:01,830][httpx][INFO] - HTTP Request: GET https://checkip.amazonaws.com/ "HTTP/1.1 200 "
+[2024-09-01 19:53:02,177][httpx][INFO] - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+[2024-09-01 19:53:02,258][httpx][INFO] - HTTP Request: GET https://api.gradio.app/v2/tunnel-request "HTTP/1.1 200 OK"
+[2024-09-01 19:53:02,411][httpx][INFO] - HTTP Request: GET https://cdn-media.huggingface.co/frpc-gradio-0.2/frpc_linux_amd64 "HTTP/1.1 200 OK"
+[2024-09-01 21:18:05,213][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 21:19:09,693][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 21:36:11,522][httpx][INFO] - HTTP Request: GET https://api.gradio.app/gradio-messaging/en "HTTP/1.1 200 OK"
+[2024-09-01 21:36:12,468][httpx][INFO] - HTTP Request: GET http://127.0.0.1:7860/startup-events "HTTP/1.1 200 OK"
+[2024-09-01 21:36:12,489][httpx][INFO] - HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+[2024-09-01 21:36:12,519][httpx][INFO] - HTTP Request: GET https://checkip.amazonaws.com/ "HTTP/1.1 200 "
+[2024-09-01 21:36:13,159][httpx][INFO] - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+[2024-09-01 21:36:13,404][httpx][INFO] - HTTP Request: GET https://api.gradio.app/v2/tunnel-request "HTTP/1.1 200 OK"
+[2024-09-01 21:45:17,239][dinov2][INFO] - using MLP layer as FFN
+[2024-09-01 22:02:25,423][httpx][INFO] - HTTP Request: GET https://api.gradio.app/gradio-messaging/en "HTTP/1.1 200 OK"
+[2024-09-01 22:02:25,789][httpx][INFO] - HTTP Request: GET https://checkip.amazonaws.com/ "HTTP/1.1 200 "
+[2024-09-01 22:02:25,791][httpx][INFO] - HTTP Request: GET http://127.0.0.1:7860/startup-events "HTTP/1.1 200 OK"
+[2024-09-01 22:02:25,819][httpx][INFO] - HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+[2024-09-01 22:02:26,410][httpx][INFO] - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+[2024-09-01 22:02:27,023][httpx][INFO] - HTTP Request: GET https://api.gradio.app/v2/tunnel-request "HTTP/1.1 200 OK"
