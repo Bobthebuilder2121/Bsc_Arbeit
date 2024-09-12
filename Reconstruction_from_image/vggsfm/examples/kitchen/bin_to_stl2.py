@@ -63,4 +63,4 @@ pcd.colors = o3d.utility.Vector3dVector(colors_rgb)
 o3d.io.write_point_cloud("points3D.pcd", pcd)
 
 # Visualize the point cloud
-#o3d.visualization.draw_geometries([pcd])
+o3d.visualization.draw_geometries([pcd])
