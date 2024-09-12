@@ -33,7 +33,7 @@ gr_visualize: False
 fmat_thres: 2
 max_reproj_error: 2
 init_max_reproj_error: 2
-max_query_pts: 4096
+max_query_pts: 1024
 
 dense_depth: False
 

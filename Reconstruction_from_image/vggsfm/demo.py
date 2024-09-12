@@ -8,7 +8,7 @@
 import torch
 import hydra
 from omegaconf import DictConfig, OmegaConf
-import os
+
 from vggsfm.runners.runner import VGGSfMRunner
 from vggsfm.datasets.demo_loader import DemoLoader
 from vggsfm.utils.utils import seed_all_random_engines
@@ -21,7 +21,7 @@ def demo_fn(cfg: DictConfig):
     """
 
     OmegaConf.set_struct(cfg, False)
-    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32" 
+
     # Print configuration
     print("Model Config:", OmegaConf.to_yaml(cfg))
 
