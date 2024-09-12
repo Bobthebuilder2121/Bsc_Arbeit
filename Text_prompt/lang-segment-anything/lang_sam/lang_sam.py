@@ -52,7 +52,8 @@ class LangSAM():
     def __init__(self, sam_type="vit_h", ckpt_path=None, return_prompts: bool = False):
         self.sam_type = sam_type
         self.return_prompts = return_prompts
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        #self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") #changed
+        self.device = torch.device("cpu")  #changed
         self.build_groundingdino()
         self.build_sam(ckpt_path)
 

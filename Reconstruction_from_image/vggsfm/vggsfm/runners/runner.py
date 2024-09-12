@@ -314,7 +314,7 @@ class VGGSfMRunner:
 
         print(f"Run Sparse Reconstruction for Scene {seq_name}")
         batch_num, frame_num, image_dim, height, width = images.shape
-        device = torch.device("cpu")#images.device
+        device = torch.device(images.device)
         reshaped_image = images.reshape(
             batch_num * frame_num, image_dim, height, width
         )
@@ -1184,7 +1184,7 @@ def get_query_points(
             raise NotImplementedError(
                 f"query method {method} is not supprted now"
             )
-        extractor = extractor.cpu().eval()
+        extractor = extractor.cpu().eval()#changed
         invalid_mask = None
 
         if bound_bbox is not None:

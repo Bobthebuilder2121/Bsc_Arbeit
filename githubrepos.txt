@@ -1,0 +1,5 @@
+https://github.com/markus-suchi/3D-DAT # Ground truth vergleich für Masken 
+https://sites.google.com/view/housecat6d/dataset # Datenset
+https://researchdata.tuwien.at/records/3b85h-y6t96 # TUW Datenset
+https://github.com/facebookresearch/vggsfm #rekonstruktion Modell
+https://github.com/luca-medeiros/lang-segment-anything #LanguageSAM Modell
