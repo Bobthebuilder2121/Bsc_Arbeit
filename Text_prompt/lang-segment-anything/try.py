@@ -118,7 +118,7 @@ def print_logits(logits):
         print(f"Logit {i+1}: {logit}")
 
 # Count the number of files in the assets directory
-assets_path = "./V_14_Data_Ikea_bottle"
+assets_path = "./Orange_can"
 assets_amount = 0
 for root_dir, cur_dir, files in os.walk(assets_path):
     assets_amount += len(files)
@@ -126,10 +126,11 @@ print('file count:', assets_amount)
 #print_gpu_memory_every_sec()
 # Load the LangSAM model and set the text prompt
 model = LangSAM()
-text_prompt = "tall-standing glass-drinking-bottle gray-bottlecap"
+text_prompt = "orange circle with green leaf can"
 #print_gpu_memory_every_sec()
-for i in range(assets_amount-1):
-    image_path = f"./V_14_Data_Ikea_bottle/{str(i+1).zfill(5)}.png"
+for i in range(assets_amount):
+    image_path = f"./Orange_can/{str(i).zfill(3)}.jpeg"
+    print('image_path:', image_path)
     image_pil = Image.open(image_path).convert("RGB")
     
     height, width = np.shape(image_pil)[0:2]
@@ -144,7 +145,7 @@ for i in range(assets_amount-1):
     else:
         # Convert masks to numpy arrays
         masks_np = [mask.squeeze().cpu().numpy() for mask in masks]
-        save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(5)}.png", assets_path +"/overlayed_output")
+        save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(5)}.jpeg", assets_path +"/overlayed_output")
 
         # Print the bounding boxes, phrases, and logits
         print_bounding_boxes(boxes)
