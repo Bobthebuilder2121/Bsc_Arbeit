@@ -33,16 +33,9 @@ def demo_fn(cfg: DictConfig):
     # Set seed for reproducibility
     seed_all_random_engines(cfg.seed)
 
-    # Determine the device
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-
     # Initialize VGGSfM Runner
     vggsfm_runner = VGGSfMRunner(cfg)
-    #vggsfm_runner.vggsfm_model.to(device)#this was added
-    #vggsfm_runner.camera_predictor.to(device)#this was added
-    #vggsfm_runner.triangulator.to(device)#this was added
-    #vggsfm_runner.track_predictor.to(device)#this was added
+
     # Load Data
     test_dataset = DemoLoader(
         SCENE_DIR=cfg.SCENE_DIR,

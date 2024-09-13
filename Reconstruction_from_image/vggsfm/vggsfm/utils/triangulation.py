@@ -223,7 +223,7 @@ def init_BA(
     )
 
     # Filter those invalid 3D points
-    valid_poins3D_mask = filter_all_points3D(
+    valid_poins3D_mask, _ = filter_all_points3D(
         points3D_opt,
         toBA_tracks,
         extrinsics_opt,
@@ -447,28 +447,16 @@ def refine_pose(
     refined_intrinsics = torch.from_numpy(np.stack(refined_intrinsics)).to(
         tracks.device
     )
+    
     if extra_params is not None:
         refined_extra_params = torch.from_numpy(
             np.stack(refined_extra_params)
         ).to(tracks.device)
-
-    valid_param_mask = torch.logical_and(
-        refined_intrinsics[:, 0, 0] >= 0.1 * scale,
-        refined_intrinsics[:, 0, 0] <= 30 * scale,
-    )
-
-    if extra_params is not None:
-        # Do not allow the extra params to be too large
         if len(refined_extra_params.shape) == 1:
             refined_extra_params = refined_extra_params[:, None]
 
-        valid_param_mask = torch.logical_and(
-            valid_param_mask, (refined_extra_params.abs() <= 0.2).all(dim=-1)
-        )
 
-    valid_trans_mask = (refined_extrinsics[:, :, 3].abs() <= 30).all(-1)
-
-    valid_frame_mask = torch.logical_and(valid_param_mask, valid_trans_mask)
+    valid_frame_mask = get_valid_frame_mask(refined_intrinsics, refined_extrinsics, refined_extra_params, scale)
 
     if (~valid_frame_mask).sum() > 0:
         print("some frames are invalid after BA refinement")
@@ -630,27 +618,13 @@ def init_refine_pose(
         refined_extra_params = torch.from_numpy(
             np.stack(refined_extra_params)
         ).to(tracks.device)
-
-    scale = image_size.max()
-
-    valid_param_mask = torch.logical_and(
-        refined_intrinsics[:, 0, 0] >= 0.1 * scale,
-        refined_intrinsics[:, 0, 0] <= 30 * scale,
-    )
-
-    if extra_params is not None:
-        # Do not allow the extra params to be too large
-
         if len(refined_extra_params.shape) == 1:
             refined_extra_params = refined_extra_params[:, None]
 
-        valid_param_mask = torch.logical_and(
-            valid_param_mask, (refined_extra_params.abs() <= 0.2).all(dim=-1)
-        )
 
-    valid_trans_mask = (refined_extrinsics[:, :, 3].abs() <= 30).all(-1)
+    scale = image_size.max()
 
-    valid_frame_mask = torch.logical_and(valid_param_mask, valid_trans_mask)
+    valid_frame_mask = get_valid_frame_mask(refined_intrinsics, refined_extrinsics, refined_extra_params, scale)
 
     if (~valid_frame_mask).sum() > 0:
         print("some frames are invalid after BA refinement")
@@ -712,11 +686,34 @@ def triangulate_tracks(
     max_tri_points_num=819200,
 ):
     """
-    Process tracks in smaller chunks to avoid memory issues during triangulation.
+    Triangulate Tracks. If necessary, process tracks in smaller chunks to avoid memory issues during triangulation.
+
+    Args:
+        extrinsics (torch.Tensor): S x 3 x 4 tensor, where S is the number of frames.
+                                   Extrinsics follow the convention of OpenCV R|t.
+        tracks_normalized (torch.Tensor): S x N x 2 tensor, where N is the number of tracks.
+                                          Tracks are normalized by intrinsics (i.e., cam_from_img).
+                                          Generally, if not considering distortion, it is in the form:
+                                          tracks_normalized = (pred_tracks - principal_point) / focal_length.
+                                          Refer to the following link for details:
+                                          https://github.com/facebookresearch/vggsfm/blob/5899a99ff263519c254110fde2036e5ce11f6874/vggsfm/utils/triangulation_helpers.py#L310
+        lo_num (int): The number of trials for local refinement for LORANSAC.
+                      If your GPU memory can afford it, higher is better, but usually doesn't need to go beyond 300.
+        max_angular_error (float): The maximum angular error for a track to be considered as an inlier.
+        min_tri_angle (float): The minimum triangulation angle to avoid some triangulation points leading to infinity.
+        track_vis (torch.Tensor, optional): Tensor to filter out low-quality correspondences.
+        track_score (torch.Tensor, optional): Tensor to filter out low-quality correspondences.
+
+    Note:
+        To filter out low-quality correspondences, use:
+        invalid_vis_conf_mask = torch.logical_or(track_vis <= 0.05, track_score <= 0.5)
     """
+
     all_tri_points_num = extrinsics.shape[0] * tracks_normalized.shape[1]
 
     if all_tri_points_num > max_tri_points_num:
+        print('Triangulate tracks in chunks to fit in memory')
+        
         num_splits = (
             all_tri_points_num + max_tri_points_num - 1
         ) // max_tri_points_num
@@ -1196,7 +1193,7 @@ def iterative_global_BA(
             image_size,
             shared_camera=shared_camera,
             camera_type=camera_type,
-            extra_params=extra_params,  # Pass extra_params to batch_matrix_to_pycolmap
+            extra_params=extra_params, 
         )
 
         reconstruction = filter_reconstruction(reconstruction)
@@ -1219,3 +1216,27 @@ def filter_reconstruction(reconstruction, filter_points=False):
         observation_manager.filter_observations_with_negative_depth()
     reconstruction.normalize(5.0, 0.1, 0.9, True)
     return reconstruction
+
+
+
+def get_valid_frame_mask(intrinsics, extrinsics, extra_params, scale):
+    valid_param_mask = torch.logical_and(
+        intrinsics[:, 0, 0] >= 0.1 * scale,
+        intrinsics[:, 0, 0] <= 30 * scale,
+    )
+
+    if extra_params is not None:
+        # Do not allow the extra params to be too large
+
+        if len(extra_params.shape) == 1:
+            extra_params = extra_params[:, None]
+
+        valid_param_mask = torch.logical_and(
+            valid_param_mask, (extra_params.abs() <= 1.0).all(dim=-1)
+        )
+
+    valid_trans_mask = (extrinsics[:, :, 3].abs() <= 30).all(-1)
+
+    valid_frame_mask = torch.logical_and(valid_param_mask, valid_trans_mask)
+    
+    return valid_frame_mask

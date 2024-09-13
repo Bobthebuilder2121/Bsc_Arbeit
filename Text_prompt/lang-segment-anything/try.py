@@ -118,7 +118,7 @@ def print_logits(logits):
         print(f"Logit {i+1}: {logit}")
 
 # Count the number of files in the assets directory
-assets_path = "./assets2"
+assets_path = "./V_14_Data_Ikea_bottle"
 assets_amount = 0
 for root_dir, cur_dir, files in os.walk(assets_path):
     assets_amount += len(files)
@@ -126,28 +126,25 @@ print('file count:', assets_amount)
 #print_gpu_memory_every_sec()
 # Load the LangSAM model and set the text prompt
 model = LangSAM()
-text_prompt = "blue marker"
-
-for i in range(assets_amount):
-    image_path = f"./assets2/{str(i).zfill(3)}.jpeg"
-    #image_path = f"./assets/car.jpeg"
+text_prompt = "tall-standing glass-drinking-bottle gray-bottlecap"
+#print_gpu_memory_every_sec()
+for i in range(assets_amount-1):
+    image_path = f"./V_14_Data_Ikea_bottle/{str(i+1).zfill(5)}.png"
     image_pil = Image.open(image_path).convert("RGB")
     
     height, width = np.shape(image_pil)[0:2]
     print('height:', height, 'width:', width)
     min, max = np.min(image_pil), np.max(image_pil)
     print('min:', min, 'max:', max)
-    #image_pil = image_pil.thumbnail((800,800))
-    text_prompt = "blue phone"
     print(f"Processing image {i} with the '{text_prompt}' prompt...")
     masks, boxes, phrases, logits = model.predict(image_pil, text_prompt)
-    torch.cuda.empty_cache() # Clear GPU memory
+
     if len(masks) == 0:
         print(f"No objects of the '{text_prompt}' prompt detected in the image.")
     else:
         # Convert masks to numpy arrays
         masks_np = [mask.squeeze().cpu().numpy() for mask in masks]
-        save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(3)}.jpeg", "./assets2/overlayed_output")
+        save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(5)}.png", assets_path +"/overlayed_output")
 
         # Print the bounding boxes, phrases, and logits
         print_bounding_boxes(boxes)

@@ -7,10 +7,7 @@
 # pyre-unsafe
 
 from typing import Optional, Union
-#import os
 
-# Set the maximum split size to 128 MB (you can adjust this value as needed)
-#os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:64'
 import torch
 
 
@@ -34,7 +31,7 @@ def make_device(device: Device) -> torch.device:
         # If cuda but with no index, then the current cuda device is indicated.
         # In that case, we fix to that device
         device = torch.device(f"cuda:{torch.cuda.current_device()}")
-    return torch.device("cpu")#device
+    return device
 
 
 def get_device(x, device: Optional[Device] = None) -> torch.device:
@@ -56,8 +53,8 @@ def get_device(x, device: Optional[Device] = None) -> torch.device:
         return make_device(device)
 
     # Set device based on input tensor
-    #if torch.is_tensor(x):
-    #    return x.device
+    if torch.is_tensor(x):
+        return x.device
 
     # Default device is cpu
     return torch.device("cpu")

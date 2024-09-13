@@ -9,8 +9,10 @@ import os
 import sys
 import copy
 import torch
+import pycolmap
 import datetime
 
+import time
 import numpy as np
 from visdom import Visdom
 from torch.cuda.amp import autocast
@@ -25,6 +27,7 @@ from vggsfm.two_view_geo.estimate_preliminary import (
 
 from vggsfm.utils.utils import (
     write_array,
+    generate_grid_samples,
     generate_rank_by_midpoint,
     generate_rank_by_dino,
     generate_rank_by_interval,
@@ -32,10 +35,16 @@ from vggsfm.utils.utils import (
     extract_dense_depth_maps,
     align_dense_depth_maps,
     switch_tensor_order,
+    sample_subrange,
     average_camera_prediction,
     create_video_with_reprojections,
     save_video_with_reprojections,
 )
+
+
+from vggsfm.utils.triangulation import triangulate_tracks
+from vggsfm.utils.triangulation_helpers import cam_from_img, filter_all_points3D
+
 
 # Optional imports
 try:
@@ -116,7 +125,7 @@ class VGGSfMRunner:
         if self.cfg.auto_download_ckpt:
             vggsfm.from_pretrained(self.cfg.model_name)
         else:
-            checkpoint = torch.load(self.cfg.resume_ckpt, map_location=torch.device('cpu'))
+            checkpoint = torch.load(self.cfg.resume_ckpt)
             vggsfm.load_state_dict(checkpoint, strict=True)
         self.vggsfm_model = vggsfm.to(self.device).eval()
         print("VGGSfM built successfully")
@@ -231,6 +240,12 @@ class VGGSfMRunner:
                 self.save_sparse_reconstruction(
                     predictions, seq_name, output_dir
                 )
+                
+                if predictions["additional_points_dict"] is not None:
+                    additional_dir = os.path.join(output_dir, "additional")
+                    os.makedirs(additional_dir, exist_ok=True)
+                    torch.save(predictions["additional_points_dict"], os.path.join(additional_dir, "additional_points_dict.pt"))
+
 
             # Extract sparse depth and point information if needed for further processing
             if self.cfg.dense_depth or self.cfg.make_reproj_video:
@@ -314,7 +329,7 @@ class VGGSfMRunner:
 
         print(f"Run Sparse Reconstruction for Scene {seq_name}")
         batch_num, frame_num, image_dim, height, width = images.shape
-        device = torch.device("cpu")#images.device
+        device = images.device
         reshaped_image = images.reshape(
             batch_num * frame_num, image_dim, height, width
         )
@@ -498,6 +513,56 @@ class VGGSfMRunner:
                 camera_type=self.cfg.camera_type,
             )
 
+        
+        additional_points_dict = None
+        
+        if self.cfg.extra_pt_pixel_interval > 0:
+            additional_points_dict = self.triangulate_extra_points(
+                images,
+                masks,
+                fmaps_for_tracker,
+                bound_bboxes,
+                intrinsics_opencv,
+                extra_params,
+                extrinsics_opencv,
+                image_paths,
+                frame_num,
+            )
+            additional_points3D = torch.cat(
+                [
+                    additional_points_dict[img_name]["points3D"]
+                    for img_name in image_paths
+                ],
+                dim=0,
+            )
+            additional_points3D_rgb = torch.cat(
+                [
+                    additional_points_dict[img_name]["points3D_rgb"]
+                    for img_name in image_paths
+                ],
+                dim=0,
+            )
+
+            additional_points_dict["sfm_points_num"] = len(points3D)
+            additional_points_dict["additional_points_num"] = len(additional_points3D)
+
+            if self.cfg.concat_extra_points:
+                additional_points3D_numpy = additional_points3D.cpu().numpy()
+                additional_points3D_rgb_numpy = (
+                    (additional_points3D_rgb * 255).long().cpu().numpy()
+                )
+                for extra_point_idx in range(len(additional_points3D)):
+                    reconstruction.add_point3D(
+                        additional_points3D_numpy[extra_point_idx],
+                        pycolmap.Track(),
+                        additional_points3D_rgb_numpy[extra_point_idx],
+                    )
+                    
+                points3D = torch.cat([points3D, additional_points3D], dim=0)
+                points3D_rgb = torch.cat(
+                    [points3D_rgb, additional_points3D_rgb], dim=0
+                )
+
         if self.cfg.filter_invalid_frame:
             extrinsics_opencv = extrinsics_opencv[valid_frame_mask]
             intrinsics_opencv = intrinsics_opencv[valid_frame_mask]
@@ -517,6 +582,11 @@ class VGGSfMRunner:
             intrinsics_opencv = intrinsics_opencv[center_order]
             if extra_params is not None:
                 extra_params = extra_params[center_order]
+            pred_track = pred_track[:, center_order]
+            pred_vis = pred_vis[:, center_order]
+            if pred_score is not None:
+                pred_score = pred_score[:, center_order]
+
 
         if back_to_original_resolution:
             reconstruction = self.rename_colmap_recons_and_rescale_camera(
@@ -557,7 +627,119 @@ class VGGSfMRunner:
         predictions["pred_vis"] = pred_vis
         predictions["pred_score"] = pred_score
         predictions["valid_tracks"] = valid_tracks
+        
+        predictions["additional_points_dict"] = additional_points_dict
+        
         return predictions
+
+    def triangulate_extra_points(
+        self,
+        images,
+        masks,
+        fmaps_for_tracker,
+        bound_bboxes,
+        intrinsics_opencv,
+        extra_params,
+        extrinsics_opencv,
+        image_paths,
+        frame_num,
+    ):
+        """
+        Triangulate extra points for each frame and return a dictionary containing 3D points and their RGB values.
+
+        Returns:
+            dict: A dictionary containing 3D points and their RGB values for each frame.
+        """
+        from vggsfm.models.utils import sample_features4d
+
+        additional_points_dict = {}
+        for frame_idx in range(frame_num):
+            rect_for_sample = bound_bboxes[:, frame_idx].clone()
+            rect_for_sample = rect_for_sample.floor()
+            rect_for_sample[:, :2] += self.cfg.extra_pt_pixel_interval // 2
+            rect_for_sample[:, 2:] -= self.cfg.extra_pt_pixel_interval // 2
+            grid_points = generate_grid_samples(
+                rect_for_sample, pixel_interval=self.cfg.extra_pt_pixel_interval
+            )
+            grid_points = grid_points.floor()
+
+            grid_rgb = sample_features4d(
+                images[:, frame_idx], grid_points[None]
+            ).squeeze(0)
+
+            if self.cfg.extra_by_neighbor > 0:
+                neighbor_start, neighbor_end = sample_subrange(
+                    frame_num, frame_idx, self.cfg.extra_by_neighbor
+                )
+            else:
+                neighbor_start = 0
+                neighbor_end = frame_num
+
+            rel_frame_idx = frame_idx - neighbor_start
+
+            extra_track, extra_vis, extra_score = predict_tracks(
+                self.cfg.query_method,
+                self.cfg.max_query_pts,
+                self.track_predictor,
+                images[:, neighbor_start:neighbor_end],
+                (
+                    masks[:, neighbor_start:neighbor_end]
+                    if masks is not None
+                    else masks
+                ),
+                fmaps_for_tracker[:, neighbor_start:neighbor_end],
+                [rel_frame_idx],
+                fine_tracking=False,
+                bound_bboxes=bound_bboxes[:, neighbor_start:neighbor_end],
+                query_points_dict={rel_frame_idx: grid_points[None]},
+            )
+
+            extra_params_neighbor = (
+                extra_params[neighbor_start:neighbor_end]
+                if extra_params is not None
+                else None
+            )
+            extrinsics_neighbor = extrinsics_opencv[neighbor_start:neighbor_end]
+            intrinsics_neighbor = intrinsics_opencv[neighbor_start:neighbor_end]
+
+            extra_track_normalized = cam_from_img(
+                extra_track, intrinsics_neighbor, extra_params_neighbor
+            )
+
+            (extra_triangulated_points, extra_inlier_num, extra_inlier_mask) = (
+                triangulate_tracks(
+                    extrinsics_neighbor,
+                    extra_track_normalized.squeeze(0),
+                    track_vis=extra_vis.squeeze(0),
+                    track_score=extra_score.squeeze(0),
+                )
+            )
+
+            valid_triangulation_mask = extra_inlier_num > 3
+
+            valid_poins3D_mask, _ = filter_all_points3D(
+                extra_triangulated_points,
+                extra_track.squeeze(0),
+                extrinsics_neighbor,
+                intrinsics_neighbor,
+                extra_params=extra_params_neighbor,  # Pass extra_params to filter_all_points3D
+                max_reproj_error=self.cfg.max_reproj_error,
+            )
+
+            valid_triangulation_mask = torch.logical_and(
+                valid_triangulation_mask, valid_poins3D_mask
+            )
+
+            extra_points3D = extra_triangulated_points[valid_triangulation_mask]
+            extra_points3D_rgb = grid_rgb[valid_triangulation_mask]
+
+            additional_points_dict[image_paths[frame_idx]] = {
+                "points3D": extra_points3D,
+                "points3D_rgb": extra_points3D_rgb,
+                "uv": grid_points[valid_triangulation_mask],
+            }
+
+        return additional_points_dict
 
     def extract_sparse_depth_and_point_from_reconstruction(self, predictions):
         """
@@ -720,10 +902,13 @@ class VGGSfMRunner:
         if output_dir is None:
             output_dir = os.path.join("output", seq_name)
 
+        sfm_output_dir = os.path.join(output_dir, "sparse")
         print("-" * 50)
-        print(f"The output has been saved in COLMAP style at: {output_dir} ")
-        os.makedirs(output_dir, exist_ok=True)
-        reconstruction_pycolmap.write(output_dir)
+        print(
+            f"The output has been saved in COLMAP style at: {sfm_output_dir} "
+        )
+        os.makedirs(sfm_output_dir, exist_ok=True)
+        reconstruction_pycolmap.write(sfm_output_dir)
 
     def visualize_3D_in_visdom(
         self, predictions, seq_name=None, output_dir=None
@@ -964,8 +1149,14 @@ def predict_tracks(
         all_points_num = images_feed.shape[1] * max_query_pts
 
         if all_points_num > max_points_num:
+            print('Predict tracks in chunks to fit in memory')
+
             # Split query_points into smaller chunks to avoid memory issues
             all_points_num = images_feed.shape[1] * query_points.shape[1]
+            
+            shuffle_indices = torch.randperm(query_points.size(1))
+            query_points = query_points[:, shuffle_indices]
+            
             num_splits = (all_points_num + max_points_num - 1) // max_points_num
             fine_pred_track, pred_vis, pred_score = predict_tracks_in_chunks(
                 track_predictor,
@@ -1184,7 +1375,7 @@ def get_query_points(
             raise NotImplementedError(
                 f"query method {method} is not supprted now"
             )
-        extractor = extractor.cpu().eval()
+        extractor = extractor.cuda().eval()#changed from .cuda().eval()
         invalid_mask = None
 
         if bound_bbox is not None:

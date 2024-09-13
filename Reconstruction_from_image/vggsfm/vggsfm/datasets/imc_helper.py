@@ -499,7 +499,7 @@ def read_model(path, ext=""):
     return cameras, images, points3D
 
 
-def write_model(cameras, images, points3D, path, ext=".txt"):
+def write_model(cameras, images, points3D, path, ext=".bin"):
     if ext == ".txt":
         write_cameras_text(cameras, os.path.join(path, "cameras" + ext))
         write_images_text(images, os.path.join(path, "images" + ext))
