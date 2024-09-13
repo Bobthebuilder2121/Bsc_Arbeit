@@ -37,7 +37,7 @@ class DemoLoader(Dataset):
         self,
         SCENE_DIR: str,
         transform: Optional[transforms.Compose] = None,
-        img_size: int = 1024,
+        img_size: int = 256,#changed from 1024
         eval_time: bool = True,
         normalize_cameras: bool = True,
         sort_by_filename: bool = True,

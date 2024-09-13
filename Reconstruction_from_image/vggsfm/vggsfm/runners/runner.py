@@ -82,11 +82,12 @@ class VGGSfMRunner:
         self.cfg = cfg
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-
+        
         self.build_vggsfm_model()
         self.camera_predictor = self.vggsfm_model.camera_predictor
         self.track_predictor = self.vggsfm_model.track_predictor
         self.triangulator = self.vggsfm_model.triangulator
+        os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32"
 
         if cfg.dense_depth:
             self.build_monocular_depth_model()
@@ -151,7 +152,7 @@ class VGGSfMRunner:
         print("Building DepthAnythingV2")
         model_config = {
             "encoder": "vitl",
-            "features": 256,
+            "features": 256, 
             "out_channels": [256, 512, 1024, 1024],
         }
         depth_model = DepthAnythingV2(**model_config)
@@ -1076,7 +1077,8 @@ def predict_tracks(
     fine_tracking,
     bound_bboxes=None,
     query_points_dict=None,
-    max_points_num=163840,
+    max_points_num=32768, #163840/5
+    #max_points_num=163840, # suitable for 40GB GPUs
 ):
     """
     Predict tracks for the given images and masks.

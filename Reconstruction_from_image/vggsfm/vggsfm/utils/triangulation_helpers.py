@@ -141,7 +141,8 @@ def filter_all_points3D(
     check_triangle=True,
     return_detail=False,
     hard_max=300,
-    max_points_num=819200,  # adjust based on available memory
+    max_points_num=163840,  # adjust based on available memory
+    #max_points_num=819200,  # adjust based on available memory
 ):
     """
     Filter 3D points based on reprojection error and triangulation angle error.
