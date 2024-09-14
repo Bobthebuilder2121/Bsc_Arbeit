@@ -6,7 +6,7 @@ hydra:
 model_name: "vggsfm_v2_0_0"
 
 seed: 0
-img_size: 256
+img_size: 512
 
 
 debug: False
@@ -28,10 +28,10 @@ comple_nonvis: True
 #BA_iters: 10
 
 query_frame_num: 6
-robust_refine: 3
-BA_iters: 10
+robust_refine: 6
+BA_iters: 6
 
-fine_tracking: False
+fine_tracking: True
 
 camera_type: "SIMPLE_PINHOLE"   # optional: ["SIMPLE_PINHOLE", "SIMPLE_RADIAL"]
 
@@ -39,10 +39,10 @@ load_gt: False
 viz_visualize: False
 gr_visualize: False
 
-fmat_thres: 0.5
-max_reproj_error: 0.5
-init_max_reproj_error: 0.5
-max_query_pts: 1024
+fmat_thres: 2
+max_reproj_error: 2
+init_max_reproj_error: 2
+max_query_pts: 2048
 
 dense_depth: False
 

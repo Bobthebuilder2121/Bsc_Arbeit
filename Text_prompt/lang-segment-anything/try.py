@@ -117,19 +117,39 @@ def print_logits(logits):
     for i, logit in enumerate(logits):
         print(f"Logit {i+1}: {logit}")
 
+# Renaming function
+def rename_files_in_directory(directory_path, assets_data_type):
+    for root_dir, sub_dirs, files in os.walk(directory_path):
+        for i, filename in enumerate(files):
+            if filename.endswith(assets_data_type):
+                old_file_path = os.path.join(root_dir, filename)
+                new_file_path = os.path.join(root_dir, f"{str(i).zfill(3)}{assets_data_type}")
+                print('old_file_path:', old_file_path)
+                print('new_file_path:', new_file_path)
+                os.rename(old_file_path, new_file_path)
+
+
+
 # Count the number of files in the assets directory
-assets_path = "./Orange_can"
+assets_path = "./Orange_can/"
+inputs_path = assets_path + "Inputs/"
+outputs_path = assets_path + "Outputs/"
 assets_amount = 0
-for root_dir, cur_dir, files in os.walk(assets_path):
+assets_data_type = ".jpeg"
+for root_dir, cur_dir, files in os.walk(inputs_path):
     assets_amount += len(files)
 print('file count:', assets_amount)
+
+# Rename the files in the assets directory if they are not already named in the correct format
+#rename_files_in_directory(inputs_path, assets_data_type)
+
 #print_gpu_memory_every_sec()
 # Load the LangSAM model and set the text prompt
 model = LangSAM()
-text_prompt = "orange circle with green leaf can"
+text_prompt = "orange can"
 #print_gpu_memory_every_sec()
 for i in range(assets_amount):
-    image_path = f"./Orange_can/{str(i).zfill(3)}.jpeg"
+    image_path =  inputs_path + f"{str(i).zfill(3)}" + assets_data_type
     print('image_path:', image_path)
     image_pil = Image.open(image_path).convert("RGB")
     
@@ -145,7 +165,7 @@ for i in range(assets_amount):
     else:
         # Convert masks to numpy arrays
         masks_np = [mask.squeeze().cpu().numpy() for mask in masks]
-        save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(5)}.jpeg", assets_path +"/overlayed_output")
+        save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(3)}" + assets_data_type, outputs_path)
 
         # Print the bounding boxes, phrases, and logits
         print_bounding_boxes(boxes)

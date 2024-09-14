@@ -39,7 +39,7 @@ class IMCDataset(Dataset):
         IMC_DIR,
         split="train",
         transform=None,
-        img_size=256, #changed from 1024
+        img_size=512, #changed from 1024
         eval_time=True,
         normalize_cameras=True,
         sort_by_filename=True,

@@ -1377,7 +1377,7 @@ def get_query_points(
             raise NotImplementedError(
                 f"query method {method} is not supprted now"
             )
-        extractor = extractor.cuda().eval()#changed from .cuda().eval()
+        extractor = extractor.cpu().eval()#changed from .cuda().eval()
         invalid_mask = None
 
         if bound_bbox is not None:
