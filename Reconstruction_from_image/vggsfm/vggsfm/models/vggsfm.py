@@ -41,13 +41,13 @@ class VGGSfM(nn.Module):
             ckpt_path = hf_hub_download(
                 repo_id="facebook/VGGSfM", filename=model_name + ".bin"
             )
-            #checkpoint = torch.load(ckpt_path) #changed
-            checkpoint = torch.load(ckpt_path, map_location='cpu') #changed
+            checkpoint = torch.load(ckpt_path) #changed
+            #checkpoint = torch.load(ckpt_path, map_location='cpu') #changed
         except:
             # In case the model is not hosted on huggingface
             # or the user cannot import huggingface_hub correctly
             _VGGSFM_URL = "https://huggingface.co/facebook/VGGSfM/resolve/main/vggsfm_v2_0_0.bin"
-            #checkpoint = torch.hub.load_state_dict_from_url(_VGGSFM_URL)#changed
-            checkpoint = torch.hub.load_state_dict_from_url(_VGGSFM_URL, map_location='cpu') #changed
+            checkpoint = torch.hub.load_state_dict_from_url(_VGGSFM_URL)#changed
+            #checkpoint = torch.hub.load_state_dict_from_url(_VGGSFM_URL, map_location='cpu') #changed
 
         self.load_state_dict(checkpoint, strict=True)

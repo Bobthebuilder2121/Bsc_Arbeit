@@ -59,7 +59,7 @@ def save_overlayed_image(image, masks, filename, save_dir):
     for i in range(len(masks)):
         mask = masks[i].astype(np.uint8) * 255  # Convert boolean mask to uint8 and scale to 255
         masked_image = cv.bitwise_and(cv2_image, cv2_image, mask=mask)
-        image_of_masks = cv.add(image_of_masks, masked_image)
+        image_of_masks = cv.bitwise_or(image_of_masks, masked_image)
 
     os.makedirs(save_dir, exist_ok=True)
     image_of_masks = Image.fromarray(image_of_masks)
@@ -131,7 +131,8 @@ def rename_files_in_directory(directory_path, assets_data_type):
 
 
 # Count the number of files in the assets directory
-assets_path = "./Orange_can/"
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32"
+assets_path = "./phone_images/"
 inputs_path = assets_path + "Inputs/"
 outputs_path = assets_path + "Outputs/"
 assets_amount = 0
@@ -145,11 +146,12 @@ print('file count:', assets_amount)
 
 #print_gpu_memory_every_sec()
 # Load the LangSAM model and set the text prompt
+
 model = LangSAM()
-text_prompt = "orange can"
+text_prompt = "smartphone"
 #print_gpu_memory_every_sec()
 for i in range(assets_amount):
-    image_path =  inputs_path + f"{str(i).zfill(3)}" + assets_data_type
+    image_path =  inputs_path+ f"{str(i).zfill(3)}" + assets_data_type
     print('image_path:', image_path)
     image_pil = Image.open(image_path).convert("RGB")
     
@@ -159,7 +161,7 @@ for i in range(assets_amount):
     print('min:', min, 'max:', max)
     print(f"Processing image {i} with the '{text_prompt}' prompt...")
     masks, boxes, phrases, logits = model.predict(image_pil, text_prompt)
-
+    torch.cuda.empty_cache()
     if len(masks) == 0:
         print(f"No objects of the '{text_prompt}' prompt detected in the image.")
     else:

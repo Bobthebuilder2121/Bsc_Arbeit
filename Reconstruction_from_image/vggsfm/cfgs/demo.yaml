@@ -6,13 +6,13 @@ hydra:
 model_name: "vggsfm_v2_0_0"
 
 seed: 0
-img_size: 512
+img_size: 1024
 
 
 debug: False
 
 
-center_order: True
+center_order: False
 mixed_precision: fp16
 extract_color: True
 filter_invalid_frame: True
@@ -26,10 +26,13 @@ comple_nonvis: True
 #query_frame_num: 6
 #robust_refine: 3
 #BA_iters: 10
+#~/BscArbeit/Reconstruction_from_image/vggsfm/examples/kitchen/sparse
+#python examples/simple_trainer.py  default --data_factor 1 --data_dir ~/BscArbeit/Reconstruction_from_image/vggsfm/examples/kitchen/sparse --result_dir ~/BscArbeit/Reconstruction_from_image/vggsfm/examples/kitchen/sparse/outputs
+
 
 query_frame_num: 6
-robust_refine: 6
-BA_iters: 6
+robust_refine: 0
+BA_iters: 1
 
 fine_tracking: True
 
@@ -39,15 +42,15 @@ load_gt: False
 viz_visualize: False
 gr_visualize: False
 
-fmat_thres: 2
-max_reproj_error: 2
-init_max_reproj_error: 2
-max_query_pts: 2048
+fmat_thres: 8
+max_reproj_error: 8
+init_max_reproj_error: 8
+max_query_pts: 256
 
 dense_depth: False
 
 avg_pose: True
-shared_camera: False
+shared_camera: True
 
 save_to_disk: True
 SCENE_DIR: examples/kitchen
