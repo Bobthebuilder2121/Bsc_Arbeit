@@ -132,11 +132,11 @@ def rename_files_in_directory(directory_path, assets_data_type):
 
 # Count the number of files in the assets directory
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32"
-assets_path = "./phone_images/"
+assets_path = "./coffe/"
 inputs_path = assets_path + "Inputs/"
 outputs_path = assets_path + "Outputs/"
 assets_amount = 0
-assets_data_type = ".jpeg"
+assets_data_type = ".png"
 for root_dir, cur_dir, files in os.walk(inputs_path):
     assets_amount += len(files)
 print('file count:', assets_amount)
@@ -148,10 +148,10 @@ print('file count:', assets_amount)
 # Load the LangSAM model and set the text prompt
 
 model = LangSAM()
-text_prompt = "smartphone"
+text_prompt = "coffeebeans in a jar"
 #print_gpu_memory_every_sec()
 for i in range(assets_amount):
-    image_path =  inputs_path+ f"{str(i).zfill(3)}" + assets_data_type
+    image_path =  inputs_path + f"{str(i+1).zfill(5)}" + assets_data_type
     print('image_path:', image_path)
     image_pil = Image.open(image_path).convert("RGB")
     

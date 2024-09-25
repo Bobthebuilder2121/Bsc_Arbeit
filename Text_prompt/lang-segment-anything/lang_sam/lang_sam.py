@@ -114,7 +114,7 @@ class LangSAM():
         )
         return masks.cpu()
 
-    def predict(self, image_pil, text_prompt, box_threshold=0.5, text_threshold=0.5):
+    def predict(self, image_pil, text_prompt, box_threshold=0.3, text_threshold=0.3):
         boxes, logits, phrases = self.predict_dino(image_pil, text_prompt, box_threshold, text_threshold)
         masks = torch.tensor([])
         if len(boxes) > 0:

@@ -18,7 +18,7 @@ gr_visualize: false
 fmat_thres: 8
 max_reproj_error: 8
 init_max_reproj_error: 8
-max_query_pts: 256
+max_query_pts: 1024
 dense_depth: false
 avg_pose: true
 shared_camera: true

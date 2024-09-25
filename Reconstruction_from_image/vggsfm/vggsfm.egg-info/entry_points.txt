@@ -1,0 +1,2 @@
+[console_scripts]
+vggsfm-demo = vggsfm_demo:demo_fn

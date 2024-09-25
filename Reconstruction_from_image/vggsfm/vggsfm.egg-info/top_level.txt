@@ -1,0 +1,2 @@
+minipytorch3d
+vggsfm
