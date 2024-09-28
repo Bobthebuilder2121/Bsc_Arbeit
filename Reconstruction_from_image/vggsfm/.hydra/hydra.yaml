@@ -129,18 +129,18 @@ hydra:
   runtime:
     version: 1.3.2
     version_base: '1.1'
-    cwd: /workspace/data/Reconstruction_from_image/vggsfm
+    cwd: /workspace/data/BscArbeit/Reconstruction_from_image/vggsfm
     config_sources:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /workspace/data/Reconstruction_from_image/vggsfm/cfgs
+    - path: /workspace/data/BscArbeit/Reconstruction_from_image/vggsfm/cfgs
       schema: file
       provider: main
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /workspace/data/Reconstruction_from_image/vggsfm
+    output_dir: /workspace/data/BscArbeit/Reconstruction_from_image/vggsfm
     choices:
       hydra/env: default
       hydra/callbacks: null

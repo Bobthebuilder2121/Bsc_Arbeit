@@ -4,7 +4,7 @@ FROM continuumio/miniconda3:latest
 # Prevent apt from hanging
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Update system and install any necessary dependencies
+# Update system and install necessary dependencies
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
@@ -15,7 +15,12 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     libgl1-mesa-glx \
     libglib2.0-0 \
+    gcc-11 \
+    g++-11 \
     && rm -rf /var/lib/apt/lists/*
+
+# Set the default GCC and G++ version
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /usr/bin/g++ g++ /usr/bin/g++-11
 
 # Set Python version explicitly to 3.10 to ensure compatibility with PyTorch 2.1.0
 RUN conda install python=3.10 -y
