@@ -51,20 +51,37 @@ def display_image_with_masks(image, masks):
     plt.show()
 
 # Save the image with the masks overlayed
+# Save the image with the masks overlayed and with a transparent background
 def save_overlayed_image(image, masks, filename, save_dir):
-    cv2_image = np.array(image)
+    cv2_image = np.array(image)  # Convert PIL image to numpy array
+    cv2_image = cv.cvtColor(cv2_image, cv.COLOR_RGB2RGBA)  # Convert to RGBA
     height, width = np.shape(cv2_image)[0:2]
-    image_of_masks = np.zeros((height, width, 3), dtype=np.uint8)
-    
+
+    # Create an empty RGBA image with a transparent background
+    image_of_masks = np.zeros((height, width, 4), dtype=np.uint8)
+
     for i in range(len(masks)):
         mask = masks[i].astype(np.uint8) * 255  # Convert boolean mask to uint8 and scale to 255
-        masked_image = cv.bitwise_and(cv2_image, cv2_image, mask=mask)
-        image_of_masks = cv.bitwise_or(image_of_masks, masked_image)
+        masked_image = cv.bitwise_and(cv2_image[:, :, :3], cv2_image[:, :, :3], mask=mask)  # Mask the RGB channels
+        
+        # Set the alpha channel to 255 where the mask is applied, otherwise it remains 0 (transparent)
+        alpha_channel = mask
+        
+        # Combine the masked image and the alpha channel
+        rgba_masked_image = np.dstack((masked_image, alpha_channel))
+        
+        # Add the masked image with transparency to the output image
+        image_of_masks = cv.bitwise_or(image_of_masks, rgba_masked_image)
 
     os.makedirs(save_dir, exist_ok=True)
-    image_of_masks = Image.fromarray(image_of_masks)
-    full_path = os.path.join(save_dir, filename)
-    image_of_masks.save(full_path)
+    image_of_masks_pil = Image.fromarray(image_of_masks)
+    
+    # Change the file extension to .png for RGBA images
+    png_filename = os.path.splitext(filename)[0] + '.png'
+    full_path = os.path.join(save_dir, png_filename)
+    image_of_masks_pil.save(full_path)
+
+
 
 # Display the image with the masks overlayed
 def display_image_of_masks(image, masks):
@@ -132,23 +149,23 @@ def rename_files_in_directory(directory_path, assets_data_type):
 
 # Count the number of files in the assets directory
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32"
-assets_path = "/workspace/data/data_reconstruction/marker2/"
+assets_path = "/workspace/data/data_reconstruction/less_cat/"
 inputs_path = assets_path + "Inputs/"
 outputs_path = assets_path + "Outputs/images/"
 assets_amount = 0
-assets_data_type = ".jpeg"
+assets_data_type = ".JPG"
 for root_dir, cur_dir, files in os.walk(inputs_path):
     assets_amount += len(files)
 print('file count:', assets_amount)
 
 # Rename the files in the assets directory if they are not already named in the correct format
-rename_files_in_directory(inputs_path, assets_data_type)
+#rename_files_in_directory(inputs_path, assets_data_type)
 
 #print_gpu_memory_every_sec()
 # Load the LangSAM model and set the text prompt
 
 model = LangSAM()
-text_prompt = "blue marker"
+text_prompt = "cat"
 #print_gpu_memory_every_sec()
 for i in range(assets_amount):
     image_path =  inputs_path + f"{str(i).zfill(3)}" + assets_data_type
