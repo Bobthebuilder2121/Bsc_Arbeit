@@ -12,7 +12,7 @@ img_size: 1024
 debug: False
 
 
-center_order: False
+center_order: True
 mixed_precision: fp16
 extract_color: True
 filter_invalid_frame: True
@@ -30,7 +30,7 @@ comple_nonvis: True
 #python examples/simple_trainer.py  default --data_factor 1 --data_dir ~/BscArbeit/Reconstruction_from_image/vggsfm/examples/kitchen/sparse --result_dir ~/BscArbeit/Reconstruction_from_image/vggsfm/examples/kitchen/sparse/outputs
 
 
-query_frame_num: 4
+query_frame_num: 10
 robust_refine: 0
 BA_iters: 1
 
@@ -45,7 +45,7 @@ gr_visualize: False
 fmat_thres: 8
 max_reproj_error: 8
 init_max_reproj_error: 8
-max_query_pts: 4096
+max_query_pts: 2048
 
 dense_depth: False
 
@@ -53,7 +53,7 @@ avg_pose: True
 shared_camera: True
 
 save_to_disk: True
-SCENE_DIR: /workspace/data/data_reconstruction/less_cat/Outputs
+SCENE_DIR: /workspace/data/data_reconstruction/glass_bottle/Outputs
 
 resume_ckpt:  ckpt/vggsfm_v2_0_0.bin
 auto_download_ckpt: True

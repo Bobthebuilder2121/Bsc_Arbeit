@@ -33,6 +33,48 @@ def save_mask(mask_np, filename):
     mask_image = Image.fromarray((mask_np * 255).astype(np.uint8))
     mask_image.save(filename)
 
+def save_overlayed_image_with_black_background(image, masks, filename, save_dir):
+    """
+    Save the image with masks overlayed, using a black background instead of a transparent one.
+    
+    Args:
+        image (PIL.Image): The input image on which to overlay the masks.
+        masks (list of np.array): List of binary masks.
+        filename (str): The name of the file to save.
+        save_dir (str): The directory where the file will be saved.
+    """
+    cv2_image = np.array(image)  # Convert PIL image to numpy array
+    cv2_image = cv.cvtColor(cv2_image, cv.COLOR_RGB2RGBA)  # Convert to RGBA
+    height, width = np.shape(cv2_image)[0:2]
+
+    # Create an RGBA image with a black background (RGB = [0, 0, 0] and Alpha = 255)
+    image_of_masks = np.zeros((height, width, 4), dtype=np.uint8)
+    image_of_masks[:, :, 3] = 255  # Set Alpha channel to 255 (opaque)
+
+    for i in range(len(masks)):
+        mask = masks[i].astype(np.uint8) * 255  # Convert boolean mask to uint8 and scale to 255
+        masked_image = cv.bitwise_and(cv2_image[:, :, :3], cv2_image[:, :, :3], mask=mask)  # Mask the RGB channels
+        
+        # Combine the masked image and apply the mask to the Alpha channel (255 for masked areas, 0 for unmasked)
+        alpha_channel = mask
+        
+        # Combine RGB and Alpha channels for the mask
+        rgba_masked_image = np.dstack((masked_image, alpha_channel))
+        
+        # Add the masked image with the black background and opaque masks to the output image
+        image_of_masks = cv.bitwise_or(image_of_masks, rgba_masked_image)
+
+    # Ensure the directory exists
+    os.makedirs(save_dir, exist_ok=True)
+    
+    # Convert to PIL image for saving
+    image_of_masks_pil = Image.fromarray(image_of_masks)
+    
+    # Save the image as a PNG file with a black background
+    png_filename = os.path.splitext(filename)[0] + '.png'
+    full_path = os.path.join(save_dir, png_filename)
+    image_of_masks_pil.save(full_path)
+
 # Display the original image and masks side by side
 def display_image_with_masks(image, masks):
     num_masks = len(masks)
@@ -81,6 +123,28 @@ def save_overlayed_image(image, masks, filename, save_dir):
     full_path = os.path.join(save_dir, png_filename)
     image_of_masks_pil.save(full_path)
 
+def save_binary_masks(masks, filename, save_dir):
+    height, width = masks[0].shape
+    
+    # Create an empty binary mask to hold the combined result
+    binary_mask = np.zeros((height, width), dtype=np.uint8)
+    
+    # Combine all masks, with 1 indicating dynamic pixels
+    for mask in masks:
+        binary_mask = np.bitwise_or(binary_mask, mask.astype(np.uint8))  # Ensure binary values are either 0 or 1
+    
+    # Multiply the binary mask by 255 to save as an image (0 -> 0, 1 -> 255)
+    binary_mask = np.logical_not(binary_mask).astype(np.uint8)
+    binary_mask_image = binary_mask * 255
+
+    
+    os.makedirs(save_dir, exist_ok=True)
+    mask_image_pil = Image.fromarray(binary_mask_image)
+    
+    # Save the mask as a PNG image
+    png_filename = os.path.splitext(filename)[0] + '.png'
+    full_path = os.path.join(save_dir, png_filename)
+    mask_image_pil.save(full_path)
 
 
 # Display the image with the masks overlayed
@@ -149,11 +213,13 @@ def rename_files_in_directory(directory_path, assets_data_type):
 
 # Count the number of files in the assets directory
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32"
-assets_path = "/workspace/data/data_reconstruction/less_cat/"
+assets_path = "/workspace/data/data_reconstruction/glass_bottle/"
 inputs_path = assets_path + "Inputs/"
-outputs_path = assets_path + "Outputs/images/"
+output_images_path = assets_path + "Outputs/images/"
+output_masks_path = assets_path + "Outputs/masks/"
+
 assets_amount = 0
-assets_data_type = ".JPG"
+assets_data_type = ".png"
 for root_dir, cur_dir, files in os.walk(inputs_path):
     assets_amount += len(files)
 print('file count:', assets_amount)
@@ -165,10 +231,10 @@ print('file count:', assets_amount)
 # Load the LangSAM model and set the text prompt
 
 model = LangSAM()
-text_prompt = "cat"
+text_prompt = "standing glass bottle with gray cap or handle"
 #print_gpu_memory_every_sec()
 for i in range(assets_amount):
-    image_path =  inputs_path + f"{str(i).zfill(3)}" + assets_data_type
+    image_path =  inputs_path + f"{str(i+1).zfill(5)}" + assets_data_type
     print('image_path:', image_path)
     image_pil = Image.open(image_path).convert("RGB")
     
@@ -184,7 +250,8 @@ for i in range(assets_amount):
     else:
         # Convert masks to numpy arrays
         masks_np = [mask.squeeze().cpu().numpy() for mask in masks]
-        save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(3)}" + assets_data_type, outputs_path)
+        save_overlayed_image_with_black_background(image_pil, masks_np, f"{str(i+1).zfill(5)}" + assets_data_type, output_images_path)
+        save_binary_masks(masks_np,f"{str(i+1).zfill(5)}"+assets_data_type, output_masks_path)
 
         # Print the bounding boxes, phrases, and logits
         print_bounding_boxes(boxes)
