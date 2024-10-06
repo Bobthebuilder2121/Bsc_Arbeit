@@ -18,25 +18,14 @@ extract_color: True
 filter_invalid_frame: True
 
 comple_nonvis: True
-### Working combination
-#query_frame_num: 6
-#robust_refine: 3
-#BA_iters: 4
-### Working combination 2
-#query_frame_num: 6
-#robust_refine: 3
-#BA_iters: 10
-#~/BscArbeit/Reconstruction_from_image/vggsfm/examples/kitchen/sparse
-#python examples/simple_trainer.py  default --data_factor 1 --data_dir ~/BscArbeit/Reconstruction_from_image/vggsfm/examples/kitchen/sparse --result_dir ~/BscArbeit/Reconstruction_from_image/vggsfm/examples/kitchen/sparse/outputs
 
-
-query_frame_num: 10
+query_frame_num: 4
 robust_refine: 0
 BA_iters: 1
 
 fine_tracking: True
 
-camera_type: "SIMPLE_PINHOLE"   # optional: ["SIMPLE_PINHOLE", "SIMPLE_RADIAL"]
+camera_type: "SIMPLE_RADIAL"   # optional: ["SIMPLE_PINHOLE", "SIMPLE_RADIAL"]
 
 load_gt: False
 viz_visualize: False
@@ -45,7 +34,7 @@ gr_visualize: False
 fmat_thres: 8
 max_reproj_error: 8
 init_max_reproj_error: 8
-max_query_pts: 2048
+max_query_pts: 8192
 
 dense_depth: False
 
@@ -53,7 +42,8 @@ avg_pose: True
 shared_camera: True
 
 save_to_disk: True
-SCENE_DIR: /workspace/data/data_reconstruction/glass_bottle/Outputs
+WORK_DIR: /workspace/data/data_reconstruction/less_cat
+SCENE_DIR: "${WORK_DIR}/Outputs"
 
 resume_ckpt:  ckpt/vggsfm_v2_0_0.bin
 auto_download_ckpt: True

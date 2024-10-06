@@ -279,3 +279,15 @@
 [2024-10-05 22:34:42,839][dinov2][INFO] - using MLP layer as FFN
 [2024-10-05 22:54:26,203][dinov2][INFO] - using MLP layer as FFN
 [2024-10-05 22:57:37,889][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 12:21:06,885][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 12:23:43,234][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 12:26:53,052][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 12:31:56,242][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 15:25:51,625][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 15:27:25,247][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 15:31:52,469][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 15:34:58,445][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 15:35:06,056][dinov2][WARNING] - xFormers not available
+[2024-10-06 15:35:06,056][dinov2][WARNING] - xFormers not available
+[2024-10-06 15:35:06,059][dinov2][INFO] - using MLP layer as FFN
+[2024-10-06 15:39:12,390][dinov2][INFO] - using MLP layer as FFN

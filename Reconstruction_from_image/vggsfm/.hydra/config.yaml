@@ -7,7 +7,7 @@ mixed_precision: fp16
 extract_color: true
 filter_invalid_frame: true
 comple_nonvis: true
-query_frame_num: 10
+query_frame_num: 4
 robust_refine: 0
 BA_iters: 1
 fine_tracking: true
@@ -18,12 +18,12 @@ gr_visualize: false
 fmat_thres: 8
 max_reproj_error: 8
 init_max_reproj_error: 8
-max_query_pts: 2048
+max_query_pts: 8192
 dense_depth: false
 avg_pose: true
 shared_camera: true
 save_to_disk: true
-SCENE_DIR: /workspace/data/data_reconstruction/glass_bottle/Outputs
+SCENE_DIR: /workspace/data/data_reconstruction/less_cat/Outputs
 resume_ckpt: ckpt/vggsfm_v2_0_0.bin
 auto_download_ckpt: true
 query_method: aliked

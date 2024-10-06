@@ -144,11 +144,12 @@ class VGGSfMRunner:
         parent_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "..", "..")
         )
-        sys.path.append(parent_path)
-        from dependency.depth_any_v2.depth_anything_v2.dpt import (
-            DepthAnythingV2,
-        )
-
+        #sys.path.append(parent_path)
+        #from dependency.depth_anything_v2.depth_anything_v2.dpt import (
+        #    DepthAnythingV2,
+        #)
+        sys.path.append(os.path.abspath("/workspace/data/BscArbeit/Reconstruction_from_image/vggsfm/dependency/Depth-Anything-V2/"))
+        from depth_anything_v2.dpt import DepthAnythingV2
         print("Building DepthAnythingV2")
         model_config = {
             "encoder": "vitl",
