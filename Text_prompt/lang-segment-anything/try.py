@@ -215,6 +215,8 @@ assets_path = "/workspace/data/data_reconstruction/glass_bottle/"
 inputs_path = assets_path + "Inputs/"
 output_images_path = assets_path + "Outputs/images/"
 output_masks_path = assets_path + "Outputs/masks/"
+output_sugar_images_path = assets_path + "Outputs/sugar/images/"
+output_sugar_masks_path = assets_path + "Outputs/sugar/masks/"
 
 assets_amount = 0
 assets_data_type = ".png"
@@ -250,6 +252,8 @@ for i in range(assets_amount):
         masks_np = [mask.squeeze().cpu().numpy() for mask in masks]
         save_overlayed_image_with_black_background(image_pil, masks_np, f"{str(i+1).zfill(5)}" + assets_data_type, output_images_path)
         save_binary_masks(masks_np,f"{str(i+1).zfill(5)}"+assets_data_type, output_masks_path)
+        save_overlayed_image(image_pil, masks_np, f"{str(i+1).zfill(5)}" + assets_data_type, output_sugar_images_path)
+        save_binary_masks(masks_np, f"{str(i+1).zfill(5)}" + assets_data_type, output_sugar_masks_path)
 
         # Print the bounding boxes, phrases, and logits
         print_bounding_boxes(boxes)

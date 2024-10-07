@@ -909,8 +909,16 @@ class VGGSfMRunner:
         print(
             f"The output has been saved in COLMAP style at: {sfm_output_dir} "
         )
+        print("-" * 50)
+        print(
+            f"The output has been saved in COLMAP style at: {self.cfg.WORK_DIR}  Outputs/sugar/sparse/0"
+        )
+        print("-" * 50)
+        print(self.cfg.WORK_DIR)
         os.makedirs(sfm_output_dir, exist_ok=True)
+        os.makedirs(self.cfg.WORK_DIR + "Outputs/sugar/sparse/0", exist_ok=True)
         reconstruction_pycolmap.write(sfm_output_dir)
+        reconstruction_pycolmap.write(self.cfg.WORK_DIR + "Outputs/sugar/sparse/0")
 
     def visualize_3D_in_visdom(
         self, predictions, seq_name=None, output_dir=None

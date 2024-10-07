@@ -11,7 +11,7 @@ query_frame_num: 4
 robust_refine: 0
 BA_iters: 1
 fine_tracking: true
-camera_type: SIMPLE_RADIAL
+camera_type: SIMPLE_PINHOLE
 load_gt: false
 viz_visualize: false
 gr_visualize: false
@@ -23,8 +23,10 @@ dense_depth: false
 avg_pose: true
 shared_camera: true
 save_to_disk: true
-WORK_DIR: /workspace/data/data_reconstruction/less_cat
-SCENE_DIR: ${WORK_DIR}/Outputs
+WORK_DIR: /workspace/data/data_reconstruction/dog_copy/
+SCENE_DIR: ${WORK_DIR}Outputs
+TEXT_PROMPT: white dog
+CONFIDENCE: 0.5
 resume_ckpt: ckpt/vggsfm_v2_0_0.bin
 auto_download_ckpt: true
 query_method: aliked

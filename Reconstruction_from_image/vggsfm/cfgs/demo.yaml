@@ -25,7 +25,7 @@ BA_iters: 1
 
 fine_tracking: True
 
-camera_type: "SIMPLE_RADIAL"   # optional: ["SIMPLE_PINHOLE", "SIMPLE_RADIAL"]
+camera_type: "SIMPLE_PINHOLE"   # DONT CHANGE
 
 load_gt: False
 viz_visualize: False
@@ -42,8 +42,11 @@ avg_pose: True
 shared_camera: True
 
 save_to_disk: True
-WORK_DIR: /workspace/data/data_reconstruction/less_cat
-SCENE_DIR: "${WORK_DIR}/Outputs"
+WORK_DIR: /workspace/data/data_reconstruction/dog_copy/
+SCENE_DIR: "${WORK_DIR}Outputs"
+
+TEXT_PROMPT: "white dog"
+CONFIDENCE: 0.5
 
 resume_ckpt:  ckpt/vggsfm_v2_0_0.bin
 auto_download_ckpt: True

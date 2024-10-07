@@ -21,6 +21,22 @@ SAM_MODELS = {
 CACHE_PATH = os.environ.get("TORCH_HOME", os.path.expanduser("~/.cache/torch/hub/checkpoints"))
 
 
+####################################################################################################################
+####################################################################################################################
+####################################################################################################################
+import hydra
+from omegaconf import DictConfig, OmegaConf
+# Global configuration variable
+cfg: DictConfig = None  # Initialize cfg as a global variable
+@hydra.main(config_path="/workspace/data/BscArbeit/Reconstruction_from_image/vggsfm/cfgs/", config_name="demo")
+def load_cfg(config: DictConfig):
+    global cfg
+    cfg = config
+load_cfg()
+####################################################################################################################
+####################################################################################################################
+####################################################################################################################
+
 def load_model_hf(repo_id, filename, ckpt_config_filename, device='cpu'):
     cache_config_file = hf_hub_download(repo_id=repo_id, filename=ckpt_config_filename)
 
@@ -114,7 +130,7 @@ class LangSAM():
         )
         return masks.cpu()
 
-    def predict(self, image_pil, text_prompt, box_threshold=0.3, text_threshold=0.3):
+    def predict(self, image_pil, text_prompt, box_threshold=1, text_threshold=1):
         boxes, logits, phrases = self.predict_dino(image_pil, text_prompt, box_threshold, text_threshold)
         masks = torch.tensor([])
         if len(boxes) > 0:

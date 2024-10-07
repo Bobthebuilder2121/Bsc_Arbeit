@@ -12,7 +12,8 @@ import open3d as o3d
 from helper import (save_overlayed_image_with_black_background, save_binary_masks,
                     print_bounding_boxes, print_detected_phrases, print_logits,
                     rename_files_in_directory, print_gpu_memory_every_sec,
-                    count_assets_in_directory, get_file_extension_from_directory)
+                    count_assets_in_directory, get_file_extension_from_directory,
+                    save_as_png, save_overlayed_image)
 from bin_helper import save_point_cloud
 
 import hydra
@@ -94,12 +95,22 @@ def demo_fn(config: DictConfig):
     save_point_cloud(output_points3D_path)
     return True
 
+# Separate method to load the cfg like demo_fn does without calling it
+@hydra.main(config_path="/workspace/data/BscArbeit/Reconstruction_from_image/vggsfm/cfgs/", config_name="demo")
+def load_cfg(config: DictConfig):
+    global cfg
+    cfg = config
+
+load_cfg()  # Load the cfg and print SCENE_DIR
 # Initialize assets path and output paths
-assets_path = "/workspace/data/data_reconstruction/less_cat/"
+assets_path = cfg.WORK_DIR
 inputs_path = os.path.join(assets_path, "Inputs/")
 output_images_path = os.path.join(assets_path, "Outputs/images/")
 output_masks_path = os.path.join(assets_path, "Outputs/masks/")
 output_points3D_path = os.path.join(assets_path, "Outputs/sparse/points3D.bin")
+output_sugar_images_path = assets_path + "Outputs/sugar/images/"
+output_sugar_masks_path = assets_path + "Outputs/sugar/masks/"
+
 
 # Automatically get file extension from the directory
 assets_data_type = get_file_extension_from_directory(inputs_path)
@@ -113,7 +124,7 @@ rename_files_in_directory(inputs_path, assets_data_type)
 
 # Load the LangSAM model and set the text prompt
 model = LangSAM()
-text_prompt = "cat"
+text_prompt = cfg.TEXT_PROMPT
 
 # Iterate through images
 for i in range(assets_amount):
@@ -133,10 +144,14 @@ for i in range(assets_amount):
     if len(masks) == 0:
         print(f"No objects of the '{text_prompt}' prompt detected in the image.")
     else:
-        # Convert masks to numpy arrays
+        if any(logit < cfg.CONFIDENCE for logit in logits):
+            print(f"Skipping image {i} because at least one logit is below the threshold.")
+            continue  
         masks_np = [mask.squeeze().cpu().numpy() for mask in masks]
-        save_overlayed_image_with_black_background(image_pil, masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_images_path)
-        save_binary_masks(masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_masks_path)
+        save_as_png(image_pil, f"{str(i).zfill(3)}" + assets_data_type, output_images_path)
+        save_binary_masks(masks_np,f"{str(i).zfill(3)}"+assets_data_type, output_masks_path)
+        save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_sugar_images_path)
+        save_binary_masks(masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_sugar_masks_path)
 
         # Print the bounding boxes, phrases, and logits
         print_bounding_boxes(boxes)
@@ -148,6 +163,6 @@ del model
 torch.cuda.empty_cache()  # Clear GPU memory
 print("Model deleted and GPU memory cleared.")
 
-# Call the demo function
+# Load the config separately and print SCENE_DIR before calling demo_fn
 with torch.no_grad():
-    demo_fn()
+    demo_fn()  # Then call demo_fn

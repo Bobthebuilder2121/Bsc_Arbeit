@@ -59,6 +59,8 @@ def save_mask(mask_np, filename):
     mask_image = Image.fromarray((mask_np * 255).astype(np.uint8))
     mask_image.save(filename)
 
+
+
 def save_overlayed_image_with_black_background(image, masks, filename, save_dir):
     """
     Save the image with masks overlayed, using a black background instead of a transparent one.
@@ -117,6 +119,29 @@ def display_image_with_masks(image, masks):
 
     plt.tight_layout()
     plt.show()
+
+def save_as_png(image, filename, save_dir):
+    """
+    Save the input image as a PNG file.
+    
+    Args:
+        image (PIL.Image or np.array): The input image to be saved.
+        filename (str): The name of the file to save.
+        save_dir (str): The directory where the file will be saved.
+    """
+    # Ensure the directory exists
+    os.makedirs(save_dir, exist_ok=True)
+    
+    # If the image is a numpy array, convert it to a PIL Image
+    if isinstance(image, np.ndarray):
+        image_pil = Image.fromarray(image)
+    else:
+        image_pil = image
+
+    # Save the image as a PNG file
+    png_filename = os.path.splitext(filename)[0] + '.png'
+    full_path = os.path.join(save_dir, png_filename)
+    image_pil.save(full_path)
 
 # Save the image with the masks overlayed
 # Save the image with the masks overlayed and with a transparent background
