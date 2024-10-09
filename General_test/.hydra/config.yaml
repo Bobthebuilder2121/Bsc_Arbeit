@@ -7,9 +7,9 @@ mixed_precision: fp16
 extract_color: true
 filter_invalid_frame: true
 comple_nonvis: true
-query_frame_num: 4
-robust_refine: 0
-BA_iters: 1
+query_frame_num: 10
+robust_refine: 3
+BA_iters: 3
 fine_tracking: true
 camera_type: SIMPLE_PINHOLE
 load_gt: false
@@ -23,10 +23,10 @@ dense_depth: false
 avg_pose: true
 shared_camera: true
 save_to_disk: true
-WORK_DIR: /workspace/data/data_reconstruction/dog_copy/
+WORK_DIR: /workspace/data/data_reconstruction/bouquet_filtered/
 SCENE_DIR: ${WORK_DIR}Outputs
-TEXT_PROMPT: white dog
-CONFIDENCE: 0.5
+TEXT_PROMPT: bouquet in a vase
+CONFIDENCE: 0.3
 resume_ckpt: ckpt/vggsfm_v2_0_0.bin
 auto_download_ckpt: true
 query_method: aliked

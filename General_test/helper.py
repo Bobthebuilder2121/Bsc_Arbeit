@@ -174,7 +174,34 @@ def save_overlayed_image(image, masks, filename, save_dir):
     full_path = os.path.join(save_dir, png_filename)
     image_of_masks_pil.save(full_path)
 
-def save_binary_masks(masks, filename, save_dir):
+
+#Previously used function for Binary masks, which still works as it should just was adapted to the algorithm to 
+#reconstruct the 3D model
+    # def save_binary_masks(masks, filename, save_dir):
+    # height, width = masks[0].shape
+
+    # # Create an empty binary mask to hold the combined result
+    # binary_mask = np.zeros((height, width), dtype=np.uint8)
+
+    # # Combine all masks, with 1 indicating dynamic pixels
+    # for mask in masks:
+    #     binary_mask = np.bitwise_or(binary_mask, mask.astype(np.uint8))  # Ensure binary values are either 0 or 1
+
+    # # Multiply the binary mask by 255 to save as an image (0 -> 0, 1 -> 255)
+    # binary_mask = np.logical_not(binary_mask).astype(np.uint8)
+    # binary_mask_image = binary_mask * 255
+
+
+    # os.makedirs(save_dir, exist_ok=True)
+    # mask_image_pil = Image.fromarray(binary_mask_image)
+
+    # # Save the mask as a PNG image
+    # png_filename = os.path.splitext(filename)[0] + '.png'
+    # full_path = os.path.join(save_dir, png_filename)
+    # mask_image_pil.save(full_path)
+
+# Save the binary masks as a PNG image
+def save_binary_masks(masks, filename, save_dir, expansion_radius=30):
     height, width = masks[0].shape
     
     # Create an empty binary mask to hold the combined result
@@ -183,12 +210,15 @@ def save_binary_masks(masks, filename, save_dir):
     # Combine all masks, with 1 indicating dynamic pixels
     for mask in masks:
         binary_mask = np.bitwise_or(binary_mask, mask.astype(np.uint8))  # Ensure binary values are either 0 or 1
+
+    # Expand the mask by 'expansion_radius' pixels
+    kernel = np.ones((2 * expansion_radius + 1, 2 * expansion_radius + 1), np.uint8)
+    expanded_mask = cv.dilate(binary_mask, kernel, iterations=1)
     
     # Multiply the binary mask by 255 to save as an image (0 -> 0, 1 -> 255)
-    binary_mask = np.logical_not(binary_mask).astype(np.uint8)
-    binary_mask_image = binary_mask * 255
+    expanded_mask = np.logical_not(expanded_mask).astype(np.uint8)
+    binary_mask_image = expanded_mask * 255
 
-    
     os.makedirs(save_dir, exist_ok=True)
     mask_image_pil = Image.fromarray(binary_mask_image)
     
@@ -196,20 +226,6 @@ def save_binary_masks(masks, filename, save_dir):
     png_filename = os.path.splitext(filename)[0] + '.png'
     full_path = os.path.join(save_dir, png_filename)
     mask_image_pil.save(full_path)
-
-# Display the image with the masks overlayed
-def display_image_of_masks(image, masks):
-    cv2_image = np.array(image)
-    height, width = np.shape(cv2_image)[0:2]
-    image_of_masks = np.zeros((height, width, 3), dtype=np.uint8)
-    
-    for i in range(len(masks)):
-        mask = masks[i].astype(np.uint8) * 255  # Convert boolean mask to uint8 and scale to 255
-        masked_image = cv.bitwise_and(cv2_image, cv2_image, mask=mask)
-        image_of_masks = cv.add(image_of_masks, masked_image)#
-
-    plt.imshow(image_of_masks)
-    plt.show()
 
 # Display the image with bounding boxes and confidence scores
 def display_image_with_boxes(image, boxes, logits):

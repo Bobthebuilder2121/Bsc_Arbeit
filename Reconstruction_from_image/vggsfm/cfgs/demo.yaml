@@ -19,9 +19,9 @@ filter_invalid_frame: True
 
 comple_nonvis: True
 
-query_frame_num: 4
-robust_refine: 0
-BA_iters: 1
+query_frame_num: 10
+robust_refine: 3
+BA_iters: 3
 
 fine_tracking: True
 
@@ -42,12 +42,12 @@ avg_pose: True
 shared_camera: True
 
 save_to_disk: True
-WORK_DIR: /workspace/data/data_reconstruction/dog_copy/
+WORK_DIR: /workspace/data/data_reconstruction/bouquet_filtered/
 SCENE_DIR: "${WORK_DIR}Outputs"
 
-TEXT_PROMPT: "white dog"
-CONFIDENCE: 0.5
-
+TEXT_PROMPT: "bouquet in a vase"
+CONFIDENCE: 0.3
+#python train_full_pipeline.py -s  -r sdf --low_poly True --export_ply True
 resume_ckpt:  ckpt/vggsfm_v2_0_0.bin
 auto_download_ckpt: True
 
