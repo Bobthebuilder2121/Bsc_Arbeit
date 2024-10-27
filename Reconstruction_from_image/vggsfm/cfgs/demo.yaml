@@ -42,11 +42,15 @@ avg_pose: True
 shared_camera: True
 
 save_to_disk: True
-WORK_DIR: /workspace/data/data_reconstruction/bouquet_filtered/
+WORK_DIR: /workspace/data/data_reconstruction/dog/
 SCENE_DIR: "${WORK_DIR}Outputs"
 
-TEXT_PROMPT: "bouquet in a vase"
+TEXT_PROMPT: "dog"
 CONFIDENCE: 0.3
+MASK_PADDING: 50    # Radius of additional mask padding 
+                    # (to include more context in the mask)
+                    # for Better reconstruction
+
 #python train_full_pipeline.py -s  -r sdf --low_poly True --export_ply True
 resume_ckpt:  ckpt/vggsfm_v2_0_0.bin
 auto_download_ckpt: True

@@ -1,4 +1,5 @@
 from PIL import Image
+import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import cv2 as cv
 import numpy as np
@@ -226,6 +227,45 @@ def save_binary_masks(masks, filename, save_dir, expansion_radius=30):
     png_filename = os.path.splitext(filename)[0] + '.png'
     full_path = os.path.join(save_dir, png_filename)
     mask_image_pil.save(full_path)
+
+def upscale_image(input_image_path, target_width=2560, target_height=1440):
+    # Load the image
+    image = cv.imread(input_image_path)
+    if image is None:
+        print("Error loading image.")
+        return
+
+    # Convert from BGR to RGB
+    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+
+    # Get original dimensions
+    height, width = image.shape[:2]
+    print(f"Original dimensions: {width}x{height}")
+
+    # Calculate scaling factors
+    scale_width = target_width / width
+    scale_height = target_height / height
+    scale = min(scale_width, scale_height)
+
+    # Calculate new dimensions
+    new_width = int(width * scale)
+    new_height = int(height * scale)
+
+    # Resize the image
+    resized_image = cv.resize(image, (new_width, new_height), interpolation=cv.INTER_LINEAR)
+
+    # Convert to a tensor and move to CUDA
+    transform = transforms.ToTensor()
+    image_tensor = transform(resized_image).unsqueeze(0).cuda()  # Add batch dimension
+
+    # Convert back to PIL image for saving
+    output_image = transforms.ToPILImage()(image_tensor.squeeze(0).cpu())
+
+    # Save the output image
+    output_image.save(input_image_path)
+
+    print(f"Upscaled image saved to: {input_image_path}")
+
 
 # Display the image with bounding boxes and confidence scores
 def display_image_with_boxes(image, boxes, logits):

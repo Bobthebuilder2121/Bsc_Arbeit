@@ -13,7 +13,7 @@ from helper import (save_overlayed_image_with_black_background, save_binary_mask
                     print_bounding_boxes, print_detected_phrases, print_logits,
                     rename_files_in_directory, print_gpu_memory_every_sec,
                     count_assets_in_directory, get_file_extension_from_directory,
-                    save_as_png, save_overlayed_image)
+                    save_as_png, save_overlayed_image, upscale_image)
 from bin_helper import save_point_cloud
 
 import hydra
@@ -130,6 +130,7 @@ text_prompt = cfg.TEXT_PROMPT
 for i in range(assets_amount):
     image_path = inputs_path + f"{str(i).zfill(3)}" + assets_data_type
     print('image_path:', image_path)
+    #upscale_image(image_path)
     image_pil = Image.open(image_path).convert("RGB")
     
     height, width = np.shape(image_pil)[0:2]
@@ -149,9 +150,9 @@ for i in range(assets_amount):
             continue  
         masks_np = [mask.squeeze().cpu().numpy() for mask in masks]
         save_as_png(image_pil, f"{str(i).zfill(3)}" + assets_data_type, output_images_path)
-        save_binary_masks(masks_np,f"{str(i).zfill(3)}"+assets_data_type, output_masks_path)
+        save_binary_masks(masks_np,f"{str(i).zfill(3)}"+assets_data_type, output_masks_path, cfg.MASK_PADDING)
         save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_sugar_images_path)
-        save_binary_masks(masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_sugar_masks_path)
+        save_binary_masks(masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_sugar_masks_path, 0)
 
         # Print the bounding boxes, phrases, and logits
         print_bounding_boxes(boxes)

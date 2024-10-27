@@ -23,10 +23,11 @@ dense_depth: false
 avg_pose: true
 shared_camera: true
 save_to_disk: true
-WORK_DIR: /workspace/data/data_reconstruction/bouquet_filtered/
+WORK_DIR: /workspace/data/data_reconstruction/dog/
 SCENE_DIR: ${WORK_DIR}Outputs
-TEXT_PROMPT: bouquet in a vase
+TEXT_PROMPT: dog
 CONFIDENCE: 0.3
+MASK_PADDING: 50
 resume_ckpt: ckpt/vggsfm_v2_0_0.bin
 auto_download_ckpt: true
 query_method: aliked
