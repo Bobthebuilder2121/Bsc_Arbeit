@@ -9,6 +9,7 @@ import subprocess as sp
 from threading import Thread, Timer
 import torch
 import open3d as o3d
+from timm.models import register_model
 from helper import (save_overlayed_image_with_black_background, save_binary_masks,
                     print_bounding_boxes, print_detected_phrases, print_logits,
                     rename_files_in_directory, print_gpu_memory_every_sec,
