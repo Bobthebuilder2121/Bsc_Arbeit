@@ -28,7 +28,7 @@ from vggsfm.utils.utils import seed_all_random_engines
 
 import os
 
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32"
+#os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32"
 
 # Global configuration variable
 cfg: DictConfig = None  # Initialize cfg as a global variable
@@ -93,7 +93,7 @@ def demo_fn(config: DictConfig):
     torch.cuda.empty_cache()  # Clear GPU memory   
     print("Model deleted and GPU memory cleared.")
 
-    save_point_cloud(output_points3D_path)
+    save_point_cloud(output_points3D_path, output_points3D_path)
     return True
 
 # Separate method to load the cfg like demo_fn does without calling it
@@ -168,3 +168,21 @@ print("Model deleted and GPU memory cleared.")
 # Load the config separately and print SCENE_DIR before calling demo_fn
 with torch.no_grad():
     demo_fn()  # Then call demo_fn
+
+# Store the current working directory to return to it later
+original_dir = os.getcwd()
+
+# Change to the directory where train_full_pipeline.py is located
+os.chdir('/workspace/data/SuGaR')
+
+# Run train_full_pipeline.py with the specified arguments
+#os.system(
+#    "python train_full_pipeline.py \
+#        -s /workspace/data/data_reconstruction/dog/Outputs/sugar/ \
+#        -r sdf \
+#        --low_poly True \
+#        --export_ply True"
+#)
+
+# Return to the original directory
+os.chdir(original_dir)

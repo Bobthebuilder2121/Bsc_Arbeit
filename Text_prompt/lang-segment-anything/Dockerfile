@@ -31,11 +31,11 @@ RUN conda install -c "nvidia/label/cuda-12.1.1" cuda -y
 # Install PyTorch, torchvision, and PyTorch3D with CUDA support in the base environment
 RUN conda install -c pytorch -c nvidia \
     pytorch=2.1.0 \
-    torchvision=0.16.0 \
-    torchaudio=2.1.0 \
+    torchvision \
+    torchaudio \
     pytorch-cuda=12.1 \
     -y && \
-    conda install -c fvcore=0.1.5 -c iopath=0.1.10 -c conda-forge fvcore iopath -y && \
+    conda install -c fvcore -c iopath -c conda-forge fvcore iopath -y && \
     conda install pytorch3d=0.7.5 -c pytorch3d
 
 # Set CUDA_HOME environment variable to the base environment location

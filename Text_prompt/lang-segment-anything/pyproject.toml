@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Language segment-anything"
 readme = "README.md"
 documentation = "https://github.com/luca-medeiros/lang-segment-anything/blob/main/README.md"
-repository = "https://github.com/luca-medeiros/lang-segment-anything"
+repository = "https://github.com/luca-medeiros/lang-segment-anything/tree/05c386ee95b26a8ec8398bebddf70ffb8ddd3faf"
 authors = [
   "Luca Medeiros <lucamedeiros@outlook.com>",
 ]

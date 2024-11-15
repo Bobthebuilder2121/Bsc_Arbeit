@@ -107,6 +107,9 @@ def save_point_cloud(input_path, output_path=None):
         output_path = "points3D.pcd"
     else:
         # Ensure the output path has the correct extension
+        if output_path.endswith(".bin"):
+            output_path = output_path.replace(".bin", ".pcd")
+            
         if not output_path.endswith(".pcd"):
             output_path += ".pcd"
 
@@ -117,6 +120,7 @@ def save_point_cloud(input_path, output_path=None):
             return
     
     # Save the PointCloud object to a PCD file
+
     o3d.io.write_point_cloud(output_path, pcd)
     print(f"Point cloud saved to: {output_path}")
     print(f"Point cloud data shape: {xyz.shape}, {colors_rgb.shape}")
