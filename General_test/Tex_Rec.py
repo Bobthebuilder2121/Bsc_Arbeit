@@ -176,13 +176,13 @@ original_dir = os.getcwd()
 os.chdir('/workspace/data/SuGaR')
 
 # Run train_full_pipeline.py with the specified arguments
-#os.system(
-#    "python train_full_pipeline.py \
-#        -s /workspace/data/data_reconstruction/dog/Outputs/sugar/ \
-#        -r sdf \
-#        --low_poly True \
-#        --export_ply True"
-#)
+os.system(
+    "python train_full_pipeline.py \
+       -s /workspace/data/data_reconstruction/Coffee_jar/Outputs/sugar/ \
+        -r sdf \
+        --high_poly True \
+        --export_ply True"
+)
 
 # Return to the original directory
 os.chdir(original_dir)

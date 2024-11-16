@@ -2,7 +2,7 @@ import pymeshlab
 import open3d as o3d
 import numpy as np
 
-def remove_black_faces(mesh_path, output_path, black_threshold=0.1): #maybe create a threshold in dependency from the overall color 
+def remove_black_faces(mesh_path, output_path, black_threshold=0.2): #maybe create a threshold in dependency from the overall color 
                                                                        #of the input images!!
                                                                        # 0.025 works well for objects with black in the image
                                                                        #0.1 works well for objects with no black in the image
@@ -43,7 +43,7 @@ def remove_black_faces(mesh_path, output_path, black_threshold=0.1): #maybe crea
 
 # Create a MeshSet object
 ms = pymeshlab.MeshSet()
-mesh_path = 'dog.ply'
+mesh_path = 'dawg.ply'
 # Load the mesh (make sure the mesh has color data)
 ms.load_new_mesh(mesh_path)
 

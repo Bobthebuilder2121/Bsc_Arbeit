@@ -7,7 +7,7 @@ mixed_precision: fp16
 extract_color: true
 filter_invalid_frame: true
 comple_nonvis: true
-query_frame_num: 3
+query_frame_num: 10
 robust_refine: 3
 BA_iters: 3
 fine_tracking: true
@@ -18,14 +18,14 @@ gr_visualize: false
 fmat_thres: 8
 max_reproj_error: 8
 init_max_reproj_error: 8
-max_query_pts: 1024
+max_query_pts: 4096
 dense_depth: false
 avg_pose: true
 shared_camera: true
 save_to_disk: true
-WORK_DIR: /workspace/data/data_reconstruction/dog/
+WORK_DIR: /workspace/data/data_reconstruction/Coffee_jar/
 SCENE_DIR: ${WORK_DIR}Outputs
-TEXT_PROMPT: dog
+TEXT_PROMPT: coffee jar
 CONFIDENCE: 0.3
 MASK_PADDING: 50
 resume_ckpt: ckpt/vggsfm_v2_0_0.bin
