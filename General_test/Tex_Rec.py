@@ -6,6 +6,7 @@ import numpy as np
 import sys
 import os
 import subprocess as sp
+import time
 from threading import Thread, Timer
 import torch
 import open3d as o3d
@@ -109,6 +110,7 @@ inputs_path = os.path.join(assets_path, "Inputs/")
 output_images_path = os.path.join(assets_path, "Outputs/images/")
 output_masks_path = os.path.join(assets_path, "Outputs/masks/")
 output_points3D_path = os.path.join(assets_path, "Outputs/sparse/points3D.bin")
+output_sugar = os.path.join(assets_path, "Outputs/sugar/")
 output_sugar_images_path = assets_path + "Outputs/sugar/images/"
 output_sugar_masks_path = assets_path + "Outputs/sugar/masks/"
 
@@ -123,6 +125,12 @@ print('assets_amount:', assets_amount)
 # Rename the files in the assets directory if they are not already named in the correct format
 rename_files_in_directory(inputs_path, assets_data_type)
 
+# Measure total start time
+total_start_time = time.time()
+
+### Start measuring how much time this script takes from here
+seg_start_time = time.time()
+
 # Load the LangSAM model and set the text prompt
 model = LangSAM()
 text_prompt = cfg.TEXT_PROMPT
@@ -131,7 +139,7 @@ text_prompt = cfg.TEXT_PROMPT
 for i in range(assets_amount):
     image_path = inputs_path + f"{str(i).zfill(3)}" + assets_data_type
     print('image_path:', image_path)
-    #upscale_image(image_path)
+    # upscale_image(image_path)
     image_pil = Image.open(image_path).convert("RGB")
     
     height, width = np.shape(image_pil)[0:2]
@@ -151,7 +159,7 @@ for i in range(assets_amount):
             continue  
         masks_np = [mask.squeeze().cpu().numpy() for mask in masks]
         save_as_png(image_pil, f"{str(i).zfill(3)}" + assets_data_type, output_images_path)
-        save_binary_masks(masks_np,f"{str(i).zfill(3)}"+assets_data_type, output_masks_path, cfg.MASK_PADDING)
+        save_binary_masks(masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_masks_path, cfg.MASK_PADDING)
         save_overlayed_image(image_pil, masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_sugar_images_path)
         save_binary_masks(masks_np, f"{str(i).zfill(3)}" + assets_data_type, output_sugar_masks_path, 0)
 
@@ -165,24 +173,60 @@ del model
 torch.cuda.empty_cache()  # Clear GPU memory
 print("Model deleted and GPU memory cleared.")
 
+# Segmentation time stamp
+seg_end_time = time.time()
+seg_time = seg_end_time - seg_start_time
+print("Segmentation completed.")
+
+### Start measuring with new time stamp from here
+sparse_start_time = time.time()
+
 # Load the config separately and print SCENE_DIR before calling demo_fn
 with torch.no_grad():
     demo_fn()  # Then call demo_fn
+
+# Sparse 3D Reconstruction time stamp
+sparse_end_time = time.time()
+sparse_time = sparse_end_time - sparse_start_time
+print("Sparse 3D Reconstruction completed.")
 
 # Store the current working directory to return to it later
 original_dir = os.getcwd()
 
 # Change to the directory where train_full_pipeline.py is located
-os.chdir('/workspace/data/SuGaR')
+os.chdir('/workspace/data/BscArbeit/Mesh_generation/SuGaR/')
+
+### Start measuring with new time stamp from here
+mesh_start_time = time.time()
 
 # Run train_full_pipeline.py with the specified arguments
 os.system(
-    "python train_full_pipeline.py \
-       -s /workspace/data/data_reconstruction/Coffee_jar/Outputs/sugar/ \
+    f"python train_full_pipeline.py \
+       -s {output_sugar} \
         -r sdf \
         --high_poly True \
         --export_ply True"
 )
+
+# Mesh Reconstruction time stamp
+mesh_end_time = time.time()
+mesh_time = mesh_end_time - mesh_start_time
+print("Mesh Reconstruction completed.")
+
+# Total time stamp
+total_end_time = time.time()
+total_time = total_end_time - total_start_time
+
+# Print all times
+print("-" * 50)
+print(
+    f"Segmentation/Sparse 3D Reconstruction/Mesh Reconstruction/Total: "
+    f"{seg_time:.2f} seconds ({seg_time / 60:.2f} minutes)/"
+    f"{sparse_time:.2f} seconds ({sparse_time / 60:.2f} minutes)/"
+    f"{mesh_time:.2f} seconds ({mesh_time / 60:.2f} minutes)/"
+    f"{total_time:.2f} seconds ({total_time / 60:.2f} minutes)"
+)
+print("-" * 50)
 
 # Return to the original directory
 os.chdir(original_dir)

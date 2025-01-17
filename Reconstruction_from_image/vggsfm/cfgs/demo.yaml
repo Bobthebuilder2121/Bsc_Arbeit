@@ -19,7 +19,7 @@ filter_invalid_frame: True
 
 comple_nonvis: True
 
-query_frame_num: 10
+query_frame_num: 18
 robust_refine: 3
 BA_iters: 3
 
@@ -34,7 +34,7 @@ gr_visualize: False
 fmat_thres: 8
 max_reproj_error: 8
 init_max_reproj_error: 8
-max_query_pts: 4096
+max_query_pts: 1024
 
 dense_depth: False
 
@@ -42,10 +42,10 @@ avg_pose: True
 shared_camera: True
 
 save_to_disk: True
-WORK_DIR: /workspace/data/data_reconstruction/Coffee_jar/
+WORK_DIR: /workspace/data/data_reconstruction/cat_benchmarks/mid_view/12x_10deg/
 SCENE_DIR: "${WORK_DIR}Outputs"
 
-TEXT_PROMPT: "coffee jar"
+TEXT_PROMPT: "cat"
 CONFIDENCE: 0.3
 MASK_PADDING: 50    # Radius of additional mask padding 
                     # (to include more context in the mask)

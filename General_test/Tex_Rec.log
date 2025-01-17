@@ -163,3 +163,78 @@
 [2024-11-16 00:54:05,024][dinov2][INFO] - using MLP layer as FFN
 [2024-11-16 01:01:28,810][dinov2][INFO] - using MLP layer as FFN
 [2024-11-16 01:24:27,812][dinov2][INFO] - using MLP layer as FFN
+[2024-11-18 17:33:05,493][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 16:59:54,762][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:27:43,333][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:27:48,151][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:27:48,151][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:27:48,155][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:31:13,202][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:31:16,784][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:31:16,785][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:31:16,788][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:34:30,896][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:34:33,251][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:34:33,251][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:34:33,254][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:36:20,906][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:36:23,294][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:36:23,295][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:36:23,298][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:38:12,698][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:38:15,072][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:38:15,072][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:38:15,075][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:44:17,763][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:44:20,114][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:44:20,114][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:44:20,117][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:58:13,869][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 17:58:16,298][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:58:16,298][dinov2][WARNING] - xFormers not available
+[2024-11-22 17:58:16,301][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 18:39:51,129][dinov2][INFO] - using MLP layer as FFN
+[2024-11-22 18:39:54,050][dinov2][WARNING] - xFormers not available
+[2024-11-22 18:39:54,050][dinov2][WARNING] - xFormers not available
+[2024-11-22 18:39:54,053][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 00:10:13,868][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 00:18:56,102][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 00:22:03,071][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 00:32:44,205][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 00:41:47,515][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 00:50:34,805][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 01:00:36,556][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 01:14:57,782][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 01:25:27,174][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 01:27:33,249][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 01:36:50,237][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 01:47:39,847][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 01:57:31,254][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 02:07:53,526][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 02:18:24,678][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 02:29:10,511][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 02:40:06,310][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 02:50:35,047][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 03:01:53,239][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 03:13:30,713][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 03:27:04,949][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 03:35:55,508][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 03:43:18,561][dinov2][INFO] - using MLP layer as FFN
+[2024-11-23 13:37:43,754][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 16:47:42,396][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 17:02:00,213][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 17:15:31,239][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 17:27:37,322][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 17:40:30,692][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 17:54:19,958][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 18:09:55,397][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 18:28:35,941][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 18:29:24,199][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 18:30:20,043][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 18:31:01,829][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 18:31:45,426][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 18:32:34,213][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 18:41:07,829][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 18:52:34,117][dinov2][INFO] - using MLP layer as FFN
+[2024-11-24 19:13:10,340][dinov2][INFO] - using MLP layer as FFN
+[2025-01-17 23:27:35,182][dinov2][INFO] - using MLP layer as FFN

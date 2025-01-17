@@ -43,7 +43,7 @@ def remove_black_faces(mesh_path, output_path, black_threshold=0.2): #maybe crea
 
 # Create a MeshSet object
 ms = pymeshlab.MeshSet()
-mesh_path = 'dawg.ply'
+mesh_path = '/workspace/data/data_reconstruction/cat_benchmarks/mid_view/15x_10deg/Outputs/sugar/15x_10deg.ply'
 # Load the mesh (make sure the mesh has color data)
 ms.load_new_mesh(mesh_path)
 
@@ -71,9 +71,9 @@ remove_black_faces(input_path, input_path)
 
 # Create a MeshSet object
 ms = pymeshlab.MeshSet()
-# Load the mesh (make sure the mesh has color data)
+# Load the mesh (make sure the mesh has color data) 
 ms.load_new_mesh('temporary.ply')
 #this works but should be done at the end
 ms.apply_filter('meshing_remove_connected_component_by_face_number', mincomponentsize= 200) 
-ms.save_current_mesh('Final.ply')
+ms.save_current_mesh('/workspace/data/data_reconstruction/cat_benchmarks/mid_view/15x_10deg/Outputs/sugar/15x_10deg_no_artifacts.ply')
 
