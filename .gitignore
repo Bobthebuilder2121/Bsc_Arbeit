@@ -6,3 +6,7 @@
 
 # Ignore all .jpg files
 *.jpg
+
+# Ignore all Meshes
+*.obj
+*.ply

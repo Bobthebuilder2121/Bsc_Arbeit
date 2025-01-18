@@ -1,0 +1,1 @@
+Namespace(sh_degree=3, source_path='/workspace/data/data_reconstruction/cat_benchmarks/mid_view/12x_10deg/Outputs/sugar', model_path='output/vanilla_gs/sugar/', images='images', resolution=-1, white_background=False, data_device='cuda', eval=False)
