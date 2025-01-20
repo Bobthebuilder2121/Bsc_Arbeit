@@ -34,7 +34,7 @@ gr_visualize: False
 fmat_thres: 8
 max_reproj_error: 8
 init_max_reproj_error: 8
-max_query_pts: 1024
+max_query_pts: 8192
 
 dense_depth: False
 
@@ -42,13 +42,14 @@ avg_pose: True
 shared_camera: True
 
 save_to_disk: True
-WORK_DIR: /workspace/data/data_reconstruction/cat_benchmarks/mid_view/12x_10deg/
+
+WORK_DIR: /workspace/data/data_reconstruction/cat_benchmarks/dog_benchmarks/top_view/15x_20deg/
 SCENE_DIR: "${WORK_DIR}Outputs"
 
-TEXT_PROMPT: "cat"
+TEXT_PROMPT: "dog"
 CONFIDENCE: 0.3
 MASK_PADDING: 50    # Radius of additional mask padding 
-                    # (to include more context in the mask)
+                    # (to include more context in the mask),
                     # for Better reconstruction
 
 #python train_full_pipeline.py -s  -r sdf --low_poly True --export_ply True

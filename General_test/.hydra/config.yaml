@@ -18,14 +18,14 @@ gr_visualize: false
 fmat_thres: 8
 max_reproj_error: 8
 init_max_reproj_error: 8
-max_query_pts: 1024
+max_query_pts: 8192
 dense_depth: false
 avg_pose: true
 shared_camera: true
 save_to_disk: true
-WORK_DIR: /workspace/data/data_reconstruction/cat_benchmarks/mid_view/12x_10deg/
+WORK_DIR: /workspace/data/data_reconstruction/cat_benchmarks/dog_benchmarks/top_view/15x_20deg/
 SCENE_DIR: ${WORK_DIR}Outputs
-TEXT_PROMPT: cat
+TEXT_PROMPT: dog
 CONFIDENCE: 0.3
 MASK_PADDING: 50
 resume_ckpt: ckpt/vggsfm_v2_0_0.bin

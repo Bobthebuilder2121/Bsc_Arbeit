@@ -2,6 +2,7 @@ from PIL import Image
 from lang_sam import LangSAM
 import matplotlib.pyplot as plt
 import cv2 as cv
+import pymeshlab
 import numpy as np
 import sys
 import os
@@ -15,7 +16,7 @@ from helper import (save_overlayed_image_with_black_background, save_binary_mask
                     print_bounding_boxes, print_detected_phrases, print_logits,
                     rename_files_in_directory, print_gpu_memory_every_sec,
                     count_assets_in_directory, get_file_extension_from_directory,
-                    save_as_png, save_overlayed_image, upscale_image)
+                    save_as_png, save_overlayed_image, upscale_image, remove_black_faces)
 from bin_helper import save_point_cloud
 
 import hydra
@@ -212,6 +213,48 @@ os.system(
 mesh_end_time = time.time()
 mesh_time = mesh_end_time - mesh_start_time
 print("Mesh Reconstruction completed.")
+# Return to the original directory
+os.chdir(original_dir)
+
+# Create a MeshSet object
+ms = pymeshlab.MeshSet()
+mesh_path = output_sugar + 'sugarmesh_3Dgs7000_sdfestim02_sdfnorm02_level03_decim1000000.ply'
+# Load the mesh (make sure the mesh has color data)
+ms.load_new_mesh(mesh_path)
+# Apply the 'Invert Faces Orientation' filter
+ms.apply_filter('meshing_invert_face_orientation', forceflip=True, onlyselected=False)
+
+# Check if face color data exists, otherwise transfer vertex colors to faces
+try:
+    # Try accessing the face color matrix
+    face_color_matrix = ms.current_mesh().face_color_matrix()
+    print("Face color matrix found.")
+except pymeshlab.pmeshlab.MissingComponentException:
+    print("Face colors missing, transferring vertex colors to faces.")
+    ms.apply_filter('compute_color_transfer_vertex_to_face')
+    ms.apply_filter('compute_color_from_texture_per_vertex') 
+
+# Check dimensions of the face color matrix
+print(np.shape(ms.current_mesh().face_color_matrix()))
+# Save the modified mesh to a new file
+ms.save_current_mesh(output_sugar + 'temporary.ply')
+# Apply the selection filter based on black faces (RGB values close to [0,0,0])
+temporary_mesh_path = output_sugar + 'temporary.ply'
+remove_black_faces(temporary_mesh_path, temporary_mesh_path)
+# Create a MeshSet object
+ms = pymeshlab.MeshSet()
+# Load the mesh (make sure the mesh has color data) 
+ms.load_new_mesh(temporary_mesh_path)
+#this works but should be done at the end
+ms.apply_filter('meshing_remove_connected_component_by_face_number', mincomponentsize= 200) 
+meshname = cfg.WORK_DIR.rstrip('/').split('/')[-1] + '.ply'
+ms.save_current_mesh(output_sugar + meshname)
+# Print all times
+print("-" * 50)
+print("Artifcats removed")
+print("-" * 50)
+
+
 
 # Total time stamp
 total_end_time = time.time()
@@ -228,5 +271,4 @@ print(
 )
 print("-" * 50)
 
-# Return to the original directory
-os.chdir(original_dir)
+

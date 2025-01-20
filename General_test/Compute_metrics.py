@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from mesh2sdf import compute  # Import mesh2sdf for SDF-based calculations
 
-def load_ply_as_pointcloud(file_path, num_points=1000000):
+def load_ply_as_pointcloud(file_path, num_points=2000000):
     """
     Load a .ply mesh file as a point cloud.
     Sample points uniformly based on the provided num_points.
@@ -110,10 +110,10 @@ def compute_iou_with_sdf(mesh1, mesh2, resolution=1000):
         return 0.0
 
     return intersection / union
-
+8
 def main():
     groundtruth_file = "/workspace/data/data_reconstruction/cat_benchmarks/gtcat.ply"
-    benchmark_file = "/workspace/data/data_reconstruction/cat_benchmarks/rotated_cat.ply"
+    benchmark_file = "/workspace/data/data_reconstruction/cat_benchmarks/mid_view/3x_30deg/Outputs/sugar/alligned_3x_30deg.ply"
 
     # Load point clouds and meshes
     pcd_gt, mesh_gt = load_ply_as_pointcloud(groundtruth_file)
@@ -128,15 +128,15 @@ def main():
 
     # Compute SSIM
     ssim_value = compute_ssim(pcd_gt, matched_pcd_pr)
-    print(f"SSIM: {ssim_value:.4f}")
+    print(f"SSIM: {ssim_value:.8f}")
 
     # Compute Chamfer Distance
     chamfer_dist = compute_chamfer_distance(pcd_gt, pcd_pr)
-    print(f"Chamfer Distance: {chamfer_dist:.6f}")
+    print(f"Chamfer Distance: {chamfer_dist:.8f}")
 
     # Compute IoU using mesh2sdf
     iou_value = compute_iou_with_sdf(mesh_gt, mesh_pr, resolution=64)
-    print(f"IoU (SDF-based): {iou_value:.6f}")
+    print(f"IoU (SDF-based): {iou_value:.8f}")
 
 if __name__ == "__main__":
     main()
