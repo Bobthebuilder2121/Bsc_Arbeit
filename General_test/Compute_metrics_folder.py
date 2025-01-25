@@ -4,6 +4,8 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from mesh2sdf import compute  # Import mesh2sdf for SDF-based calculations
 import point_cloud_utils as pcu
+import os
+import csv
 
 def load_ply_as_pointcloud(file_path, num_points=2000000):
     """
@@ -59,27 +61,58 @@ def compute_iou_with_sdf(mesh1, mesh2, resolution=1000):
 
 def main():
     groundtruth_file = "/workspace/data/data_reconstruction/cat_benchmarks/gtcat.ply"
-    benchmark_file = "/workspace/data/data_reconstruction/cat_benchmarks/mid_view/4x_90deg/Outputs/sugar/alligned_4x_90deg.ply"
+    base_dir = "/workspace/data/data_reconstruction/cat_benchmarks/top_view/"
+    output_csv = "evaluation_results.csv"
 
-    # Load point clouds and meshes
-    pcd_gt, mesh_gt = load_ply_as_pointcloud(groundtruth_file)
-    pcd_pr, mesh_pr = load_ply_as_pointcloud(benchmark_file)
+    # Load ground truth mesh
+    _, mesh_gt = load_ply_as_pointcloud(groundtruth_file)
 
-    # Match point clouds
-    matched_pcd_pr = match_point_clouds(pcd_gt, pcd_pr)
-    # p1 is an (n, 3)-shaped numpy array containing one point per row
-    p1 = pcu.load_mesh_v(groundtruth_file)
+    results = []
 
-    # p2 is an (m, 3)-shaped numpy array containing one point per row
-    p2 = pcu.load_mesh_v(benchmark_file)
+    for folder_name in os.listdir(base_dir):
+        folder_path = os.path.join(base_dir, folder_name)
 
-    # Compute the chamfer distance between p1 and p2
-    cd = pcu.chamfer_distance(p1, p2)
-    print(f"Chamfer distance: {cd}")  
+        if not os.path.isdir(folder_path):
+            continue
 
-    # Compute IoU using mesh2sdf
-    iou_value = compute_iou_with_sdf(mesh_gt, mesh_pr, resolution=64)
-    print(f"IoU (SDF-based): {iou_value:.8f}")
+        # Locate the aligned .ply file
+        aligned_file = os.path.join(folder_path, "Outputs/sugar/", f"alligned_{folder_name}.ply")
+        print(f"Checking folder: {aligned_file}")
+        if not os.path.exists(aligned_file):
+            print(f"Aligned file not found for folder: {folder_name}")
+            continue
+
+        # Load predicted point cloud and mesh
+        pcd_pr, mesh_pr = load_ply_as_pointcloud(aligned_file)
+
+        # Load vertices for Chamfer distance calculation
+        p1 = pcu.load_mesh_v(groundtruth_file)
+        p2 = pcu.load_mesh_v(aligned_file)
+
+        # Compute Chamfer distance
+        chamfer_distance = pcu.chamfer_distance(p1, p2)
+
+        # Compute IoU using mesh2sdf
+        iou_value = compute_iou_with_sdf(mesh_gt, mesh_pr, resolution=64)
+
+         # Store results
+        results.append([folder_name, f"{chamfer_distance:.6f}".replace('.', ','), f"{iou_value:.8f}".replace('.', ',')])
+        print(f"Folder: {folder_name}, Chamfer Distance: {chamfer_distance:.6f}, IoU: {iou_value:.8f}")
+
+    # Print all results
+    print("\nSummary of Results:")
+    for result in results:
+        print(f"Folder: {result[0]}, Chamfer Distance: {result[1]}, IoU: {result[2]}")
+
+    # Save results to CSV
+    try:
+        with open(output_csv, mode="w", newline="") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(["Folder", "Chamfer Distance", "IoU"])
+            writer.writerows(results)
+        print(f"\nResults saved to {output_csv}")
+    except Exception as e:
+        print(f"Error saving results to CSV: {e}")
 
 if __name__ == "__main__":
     main()

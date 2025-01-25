@@ -7,7 +7,7 @@ mixed_precision: fp16
 extract_color: true
 filter_invalid_frame: true
 comple_nonvis: true
-query_frame_num: 18
+query_frame_num: 12
 robust_refine: 3
 BA_iters: 3
 fine_tracking: true
@@ -18,12 +18,12 @@ gr_visualize: false
 fmat_thres: 8
 max_reproj_error: 8
 init_max_reproj_error: 8
-max_query_pts: 8192
+max_query_pts: 4092
 dense_depth: false
 avg_pose: true
 shared_camera: true
 save_to_disk: true
-WORK_DIR: /workspace/data/data_reconstruction/cat_benchmarks/dog_benchmarks/top_view/15x_20deg/
+WORK_DIR: /workspace/data/data_reconstruction/cat_benchmarks/dog_benchmarks/front_view/36x_10deg/
 SCENE_DIR: ${WORK_DIR}Outputs
 TEXT_PROMPT: dog
 CONFIDENCE: 0.3
