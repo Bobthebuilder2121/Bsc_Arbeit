@@ -43,7 +43,7 @@ shared_camera: True
 
 save_to_disk: True
 
-WORK_DIR: /workspace/data/data_reconstruction/cat_benchmarks/dog_benchmarks/front_view/36x_10deg/
+WORK_DIR: /workspace/data/data_reconstruction/cat_benchmarks/dog_benchmarks/front_view/3x_10deg/
 SCENE_DIR: "${WORK_DIR}Outputs"
 
 TEXT_PROMPT: "dog"

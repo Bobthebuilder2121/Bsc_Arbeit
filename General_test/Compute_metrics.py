@@ -58,8 +58,8 @@ def compute_iou_with_sdf(mesh1, mesh2, resolution=1000):
     return intersection / union
 
 def main():
-    groundtruth_file = "/workspace/data/data_reconstruction/cat_benchmarks/gtcat.ply"
-    benchmark_file = "/workspace/data/data_reconstruction/cat_benchmarks/mid_view/4x_90deg/Outputs/sugar/alligned_4x_90deg.ply"
+    groundtruth_file = "/workspace/data/data_reconstruction/cat_benchmarks/dog_ground-truth.ply"
+    benchmark_file = "/workspace/data/data_reconstruction/cat_benchmarks/dog_benchmarks/front_view/8x_10deg/Outputs/sugar/alligned_8x_10deg.ply"
 
     # Load point clouds and meshes
     pcd_gt, mesh_gt = load_ply_as_pointcloud(groundtruth_file)

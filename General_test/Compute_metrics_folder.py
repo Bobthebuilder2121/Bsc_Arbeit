@@ -60,8 +60,8 @@ def compute_iou_with_sdf(mesh1, mesh2, resolution=1000):
     return intersection / union
 
 def main():
-    groundtruth_file = "/workspace/data/data_reconstruction/cat_benchmarks/gtcat.ply"
-    base_dir = "/workspace/data/data_reconstruction/cat_benchmarks/top_view/"
+    groundtruth_file = "/workspace/data/data_reconstruction/cat_benchmarks/dog_ground-truth.ply"
+    base_dir = "/workspace/data/data_reconstruction/cat_benchmarks/dog_benchmarks/front_view/"
     output_csv = "evaluation_results.csv"
 
     # Load ground truth mesh
